@@ -1,0 +1,25 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.5.31'
+    id 'application'
+}
+
+group = 'dev.aayushgupta'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+
+compileKotlin {
+    kotlinOptions.jvmTarget = '11'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '11'
+}
+
+application {
+    mainClassName = 'MainKt'
+}
