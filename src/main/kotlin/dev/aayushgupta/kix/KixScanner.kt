@@ -63,6 +63,8 @@ internal class KixScanner(private val source: String) {
                 if (match('/')) {
                     // comment goes until the end of line
                     while (peek() != '\n' && !isAtEnd()) advance()
+                } else if (match('*')) {
+                    multilineComment()
                 } else {
                     addToken(SLASH)
                 }
@@ -157,5 +159,25 @@ internal class KixScanner(private val source: String) {
         var type = keywords[text]
         if (type == null) type = IDENTIFIER
         addToken(type)
+    }
+
+    private fun multilineComment() {
+        // TODO: nested multiline comments (this does not work for now -> "/* */ */"
+        while (!(peek() == '*' && peekNext() == '/') && !isAtEnd()) {
+            if (peek() == '\n') line++
+            advance()
+        }
+
+        if (isAtEnd()) {
+            error(line, "Unclosed multiline comment.")
+            return
+        }
+
+        // found a "*/", advance 2 times
+        advance()
+        advance()
+
+        // TODO: add debug flag to print contents of token added (probably to the addToken() fun)
+        println("Multiline Comment: ${source.substring(start, current)}")
     }
 }

@@ -1,0 +1,4 @@
+/*
+** A sample program to print hello.
+*/
+print "hello"
