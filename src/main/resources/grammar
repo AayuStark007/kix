@@ -1,0 +1,23 @@
+// Grammar reference for Kix (just for ref, not used to generate anything)
+
+// First, we define some terms:
+Literal:           Number, Strings, Booleans and nil
+Unary Expression:  Prefix ! to perform logical not, and - to negate a number
+Binary Expression: Infix arithmetic (+, -, *, /) and logic (==, !=, <, <=, >, >=)
+Parenthesis:       Pair of ( and ) wrapped around an expression
+
+// Now, the grammar production rules
+expression      -> literal
+                 | unary
+                 | binary
+                 | grouping ;
+
+literal         -> NUMBER | STRING | "true" | "false" | "nil" ;
+
+grouping        -> "(" expression ")" ;
+
+unary           -> ( "-" | "!" ) expression ;
+
+binary          -> expression operator expression ;
+
+operator        -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
