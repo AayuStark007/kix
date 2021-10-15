@@ -28,19 +28,44 @@ private fun defineAst(outputDir: String, baseName: String, types: List<String>) 
     writer.println()
     writer.println("sealed class $baseName {")
 
+    defineVisitor(writer, baseName, types)
+    writer.println()
+
     // AST classes
     types.forEach { type ->
         val className = type.split("->")[0].trim()
         val fields = type.split("->")[1].trim()
         defineType(writer, baseName, className, fields)
+        writer.println()
     }
+
+    // The base accept() method
+    writer.println("\tabstract fun <R> accept(visitor: Visitor<R>): R")
 
     writer.println("}")
     writer.close()
 }
 
+fun defineVisitor(writer: PrintWriter, baseName: String, types: List<String>) {
+    writer.println("\tinterface Visitor<R> {")
+
+    types.forEach { type ->
+        val typeName = type.split("->")[0].trim()
+        writer.println("\t\tfun visit$typeName$baseName(${baseName.lowercase()}: $typeName): R")
+    }
+
+    writer.println("\t}")
+}
+
 private fun defineType(
     writer: PrintWriter, baseName: String,
     className: String, fields: String) {
-    writer.println("\tclass $className($fields): $baseName()")
+    writer.println("\tclass $className($fields): $baseName() {")
+
+    // Visitor pattern
+    writer.println("\t\toverride fun <R> accept(visitor: Visitor<R>): R {")
+    writer.println("\t\t\treturn visitor.visit$className$baseName(this)")
+    writer.println("\t\t}")
+
+    writer.println("\t}")
 }
