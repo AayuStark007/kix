@@ -1,6 +1,6 @@
-package dev.aayushgupta.kix
+package dev.aayushgupta.kix.core
 
-import dev.aayushgupta.kix.TokenType.*
+import dev.aayushgupta.kix.core.TokenType.*
 import dev.aayushgupta.kix.util.Null
 
 internal class KixScanner(private val source: String) {

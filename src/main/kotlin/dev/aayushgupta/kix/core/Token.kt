@@ -1,4 +1,4 @@
-package dev.aayushgupta.kix
+package dev.aayushgupta.kix.core
 
 data class Token(
     val type: TokenType,

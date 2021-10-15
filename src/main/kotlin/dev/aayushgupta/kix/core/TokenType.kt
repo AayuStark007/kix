@@ -1,4 +1,4 @@
-package dev.aayushgupta.kix
+package dev.aayushgupta.kix.core
 
 enum class TokenType {
     // Single char tokens

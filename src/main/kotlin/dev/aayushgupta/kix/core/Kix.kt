@@ -1,4 +1,4 @@
-package dev.aayushgupta.kix
+package dev.aayushgupta.kix.core
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
