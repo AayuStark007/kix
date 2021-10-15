@@ -4,3 +4,4 @@ gradlew
 gradle/
 .idea/
 gradlew.bat
+out/

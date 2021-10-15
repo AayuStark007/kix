@@ -1,5 +1,6 @@
 package dev.aayushgupta.kix.core
 
+import dev.aayushgupta.kix.error as error
 import dev.aayushgupta.kix.core.TokenType.*
 import dev.aayushgupta.kix.util.Null
 
