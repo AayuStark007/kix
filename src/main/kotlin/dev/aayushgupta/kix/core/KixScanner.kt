@@ -79,7 +79,7 @@ internal class KixScanner(private val source: String) {
                 } else if (isAlpha(c)) {
                     identifier()
                 } else {
-                    error(line, "Unexpected character.")
+                    error(line, "Unexpected character: \"$c\"")
                 }
             }
         }
@@ -116,7 +116,7 @@ internal class KixScanner(private val source: String) {
         }
 
         if (isAtEnd()) {
-            error(line, "Unterminated string.")
+            error(line, "Unterminated string: ${source.substring(start, current)}")
             return
         }
 
@@ -170,7 +170,7 @@ internal class KixScanner(private val source: String) {
         }
 
         if (isAtEnd()) {
-            error(line, "Unclosed multiline comment.")
+            error(line, "Unclosed multiline comment: \n${source.substring(start, current - 1)}")
             return
         }
 
@@ -179,6 +179,6 @@ internal class KixScanner(private val source: String) {
         advance()
 
         // TODO: add debug flag to print contents of token added (probably to the addToken() fun)
-        println("Multiline Comment: ${source.substring(start, current)}")
+        println("Multiline Comment: \n${source.substring(start, current)}")
     }
 }
