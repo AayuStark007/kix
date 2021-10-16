@@ -4,7 +4,7 @@ import dev.aayushgupta.kix.core.Expr
 import dev.aayushgupta.kix.core.Token
 import dev.aayushgupta.kix.core.TokenType
 
-class AstPrinter: Expr.Visitor<String> {
+class AstPrinter : Expr.Visitor<String> {
 
     fun print(expr: Expr): String {
         return expr.accept(this)

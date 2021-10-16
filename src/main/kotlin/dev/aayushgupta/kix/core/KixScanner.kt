@@ -1,7 +1,7 @@
 package dev.aayushgupta.kix.core
 
-import dev.aayushgupta.kix.error as error
 import dev.aayushgupta.kix.core.TokenType.*
+import dev.aayushgupta.kix.error
 import dev.aayushgupta.kix.util.Null
 
 internal class KixScanner(private val source: String) {
@@ -10,6 +10,7 @@ internal class KixScanner(private val source: String) {
     private var start = 0
     private var current = 0
     private var line = 1
+
     companion object {
         private val keywords = mapOf(
             "and" to AND,
@@ -70,7 +71,8 @@ internal class KixScanner(private val source: String) {
                     addToken(SLASH)
                 }
             }
-            ' ', '\r', '\t' -> {}
+            ' ', '\r', '\t' -> {
+            }
             '\n' -> line++
             '"' -> string()
             else -> {

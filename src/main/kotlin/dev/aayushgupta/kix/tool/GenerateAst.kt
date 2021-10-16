@@ -10,12 +10,14 @@ fun main(args: Array<String>) {
         exitProcess(64)
     }
     val outputDir = args[0]
-    defineAst(outputDir, "Expr", listOf(
-        "Binary    -> val left: Expr, val operator: Token, val right: Expr",
-        "Grouping  -> val expression: Expr",
-        "Literal   -> val value: Any",
-        "Unary     -> val operator: Token, val right: Expr"
-    ))
+    defineAst(
+        outputDir, "Expr", listOf(
+            "Binary    -> val left: Expr, val operator: Token, val right: Expr",
+            "Grouping  -> val expression: Expr",
+            "Literal   -> val value: Any",
+            "Unary     -> val operator: Token, val right: Expr"
+        )
+    )
 }
 
 @Throws(IOException::class)
@@ -59,7 +61,8 @@ fun defineVisitor(writer: PrintWriter, baseName: String, types: List<String>) {
 
 private fun defineType(
     writer: PrintWriter, baseName: String,
-    className: String, fields: String) {
+    className: String, fields: String
+) {
     writer.println("\tclass $className($fields): $baseName() {")
 
     // Visitor pattern

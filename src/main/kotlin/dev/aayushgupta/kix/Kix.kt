@@ -25,7 +25,7 @@ fun runPrompt() {
     val input = InputStreamReader(System.`in`)
     val reader = BufferedReader(input)
 
-    while(true) {
+    while (true) {
         print("> ")
         val line = reader.readLine() ?: break
         run(line)
