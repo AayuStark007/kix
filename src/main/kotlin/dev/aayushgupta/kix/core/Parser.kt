@@ -17,61 +17,17 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun expression(): Expr {
-        return equality()
-    }
-
-    private fun equality(): Expr {
-        var expr = comparison()
-
-        while (match(BANG_EQUAL, EQUAL_EQUAL)) {
-            val operator = previous()
-            val right = comparison()
-            expr = Expr.Binary(expr, operator, right)
-        }
-        return expr
-    }
-
-    private fun comparison(): Expr {
-        var expr = term()
-
-        while(match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
-            val operator = previous()
-            val right = term()
-            expr = Expr.Binary(expr, operator, right)
-        }
-
-        return expr
-//        return parseLeftAssociative(::term, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
-    }
-
-    private fun term(): Expr {
-        var expr = factor()
-
-        while(match(MINUS, PLUS)) {
-            val op = previous()
-            val right = factor()
-            expr = Expr.Binary(expr, op, right)
-        }
-        return expr
-    }
-
-    private fun factor(): Expr {
-        var expr = unary()
-
-        while(match(SLASH, STAR)) {
-            val op = previous()
-            val right = unary()
-            expr = Expr.Binary(expr, op, right)
-        }
-        return expr
-    }
+    private fun expression(): Expr = equality()
+    private fun equality(): Expr = parseLeftAssociative(::comparison, BANG_EQUAL, EQUAL_EQUAL)
+    private fun comparison(): Expr = parseLeftAssociative(::term, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
+    private fun term(): Expr = parseLeftAssociative(::factor, MINUS, PLUS)
+    private fun factor(): Expr = parseLeftAssociative(::unary, SLASH, STAR)
 
     private fun unary(): Expr {
         if (match(BANG, MINUS)) {
             val operator = previous()
             val right = unary()
-            return Expr.Unary(operator, right )
+            return Expr.Unary(operator, right)
         }
         return primary()
     }
@@ -81,24 +37,20 @@ class Parser(private val tokens: List<Token>) {
             match(FALSE) -> Expr.Literal(false)
             match(TRUE) -> Expr.Literal(true)
             match(NIL) -> Expr.Literal(Null)
-
             match(NUMBER, STRING) -> Expr.Literal(previous().literal)
-
             match(LEFT_PAREN) -> {
                 val expr = expression()
                 consume(RIGHT_PAREN, "Expect ')' after expression.")
                 Expr.Grouping(expr)
             }
-
             else -> throw error(peek(), "Expect expression.")
         }
     }
 
-
     // TODO: Use for above use cases
-    private fun parseLeftAssociative(handle: () -> Expr, vararg types: TokenType): Expr {
+    private inline fun parseLeftAssociative(handle: () -> Expr, vararg types: TokenType): Expr {
         var expr = handle()
-        while(match(*types)) {
+        while (match(*types)) {
             val operator = previous()
             val right = handle()
             expr = Expr.Binary(expr, operator, right)
@@ -131,9 +83,9 @@ class Parser(private val tokens: List<Token>) {
         return previous()
     }
 
-    private fun isAtEnd()  : Boolean = peek().type == EOF
-    private fun peek()     : Token   = tokens[current]
-    private fun previous() : Token   = tokens[current - 1]
+    private fun isAtEnd(): Boolean = peek().type == EOF
+    private fun peek(): Token = tokens[current]
+    private fun previous(): Token = tokens[current - 1]
 
     private fun error(token: Token, message: String): ParseError {
         dev.aayushgupta.kix.error(token, message)
@@ -142,17 +94,14 @@ class Parser(private val tokens: List<Token>) {
 
     private fun synchronize() {
         advance()
-
         while (!isAtEnd()) {
             if (previous().type == SEMICOLON) return
-
             when (peek().type) {
                 CLASS, FUN, VAR, FOR, IF, WHILE, PRINT, RETURN -> return
-                else -> {}
+                else -> {
+                }
             }
-
             advance()
         }
     }
-
 }
