@@ -1,29 +1,34 @@
 package dev.aayushgupta.kix.util
 
 import dev.aayushgupta.kix.core.Expr
+import dev.aayushgupta.kix.core.Expr.*
 import dev.aayushgupta.kix.core.Token
 import dev.aayushgupta.kix.core.TokenType
 
-class AstPrinter : Expr.Visitor<String> {
+class AstPrinter : Visitor<String> {
 
     fun print(expr: Expr): String {
         return expr.accept(this)
     }
 
-    override fun visitBinaryExpr(expr: Expr.Binary): String {
+    override fun visitTernaryExpr(expr: Ternary): String {
+        return parenthesize("ternary", expr.condition, expr.expTrue, expr.expFalse)
+    }
+
+    override fun visitBinaryExpr(expr: Binary): String {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right)
     }
 
-    override fun visitGroupingExpr(expr: Expr.Grouping): String {
+    override fun visitGroupingExpr(expr: Grouping): String {
         return parenthesize("group", expr.expression)
     }
 
-    override fun visitLiteralExpr(expr: Expr.Literal): String {
+    override fun visitLiteralExpr(expr: Literal): String {
         if (expr.value == Null) return "nil"
         return "${expr.value}"
     }
 
-    override fun visitUnaryExpr(expr: Expr.Unary): String {
+    override fun visitUnaryExpr(expr: Unary): String {
         return parenthesize(expr.operator.lexeme, expr.right)
     }
 
@@ -44,18 +49,28 @@ class AstPrinter : Expr.Visitor<String> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val expression = Expr.Binary(
-                Expr.Unary(
-                    Token(TokenType.MINUS, "-", Null, 1),
-                    Expr.Literal(123),
+            val expression =
+            Ternary(
+                Binary(
+                            Binary(
+                                    Unary(
+                                        Token(TokenType.MINUS, "-", Null, 1),
+                                        Literal(123),
+                                    ),
+                                    Token(TokenType.STAR, "*", Null, 1),
+                                    Grouping(
+                                        Literal(45.67),
+                                    )
+                                ),
+                            Token(TokenType.GREATER, ">", Null, 1),
+                            Grouping(Literal(0))
                 ),
-                Token(TokenType.STAR, "*", Null, 1),
-                Expr.Grouping(
-                    Expr.Literal(45.67),
-                )
+                Grouping(Literal("positive")),
+                Grouping(Literal("negative"))
             )
 
             println(AstPrinter().print(expression))
         }
     }
+
 }

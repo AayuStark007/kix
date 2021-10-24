@@ -2,10 +2,17 @@ package dev.aayushgupta.kix.core
 
 sealed class Expr {
 	interface Visitor<R> {
+		fun visitTernaryExpr(expr: Ternary): R
 		fun visitBinaryExpr(expr: Binary): R
 		fun visitGroupingExpr(expr: Grouping): R
 		fun visitLiteralExpr(expr: Literal): R
 		fun visitUnaryExpr(expr: Unary): R
+	}
+
+	class Ternary(val condition: Expr, val expTrue: Expr, val expFalse: Expr): Expr() {
+		override fun <R> accept(visitor: Visitor<R>): R {
+			return visitor.visitTernaryExpr(this)
+		}
 	}
 
 	class Binary(val left: Expr, val operator: Token, val right: Expr): Expr() {
