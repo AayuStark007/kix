@@ -47,10 +47,16 @@ fun runFile(path: String) {
 
 fun run(source: String) {
     val scanner = KixScanner(source)
+    val scanStart = System.nanoTime()
     val tokens = scanner.scanTokens()
+    val scanDurationNs = System.nanoTime() - scanStart
+    println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
+    
     val parser = Parser(tokens)
-
+    val now = System.nanoTime()
     val expression = parser.parse()
+    val parseTimeNs = System.nanoTime() - now
+    println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
 
     if (hadError) return
 
