@@ -1,6 +1,10 @@
 package dev.aayushgupta.kix
 
 import dev.aayushgupta.kix.core.KixScanner
+import dev.aayushgupta.kix.core.Parser
+import dev.aayushgupta.kix.core.Token
+import dev.aayushgupta.kix.core.TokenType
+import dev.aayushgupta.kix.util.AstPrinter
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -44,10 +48,13 @@ fun runFile(path: String) {
 fun run(source: String) {
     val scanner = KixScanner(source)
     val tokens = scanner.scanTokens()
+    val parser = Parser(tokens)
 
-    tokens.forEach { token ->
-        println(token)
-    }
+    val expression = parser.parse()
+
+    if (hadError) return
+
+    println(AstPrinter().print(expression))
 }
 
 fun error(line: Int, message: String) {
@@ -57,4 +64,12 @@ fun error(line: Int, message: String) {
 fun report(line: Int, where: String, message: String) {
     System.err.println("[line $line] Error${where}: $message")
     hadError = true
+}
+
+fun error(token: Token, message: String) {
+    if (token.type == TokenType.EOF) {
+        report(token.line, " at end", message)
+    } else {
+        report(token.line, " at '${token.lexeme}'", message)
+    }
 }

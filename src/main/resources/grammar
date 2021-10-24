@@ -7,17 +7,19 @@ Binary Expression: Infix arithmetic (+, -, *, /) and logic (==, !=, <, <=, >, >=
 Parenthesis:       Pair of ( and ) wrapped around an expression
 
 // Now, the grammar production rules
-expression      -> literal
-                 | unary
-                 | binary
-                 | grouping ;
+expression      -> equality
 
-literal         -> NUMBER | STRING | "true" | "false" | "nil" ;
+// precedence rules
+equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
 
-grouping        -> "(" expression ")" ;
+comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
 
-unary           -> ( "-" | "!" ) expression ;
+term            -> factor ( ( "-" | "+" ) factor )* ;
 
-binary          -> expression operator expression ;
+factor          -> unary ( ( "/" | "*" ) unary )* ;
 
-operator        -> "==" | "!=" | "<" | "<=" | ">" | ">=" | "+" | "-" | "*" | "/" ;
+unary           -> ( "!" | "-" ) unary
+                 | primary ;
+
+primary         -> NUMBER | STRING | "true" | "false" | "nil"
+                 | "(" expression ")" ;

@@ -1,15 +1,9 @@
-/*
-** A sample program to print hello.
-*/
-print "hello"
-2+2
-
-hello world
-
-// singe line comment
-
-print 2.365 / 12.8
-
-?
-
-"unterm str
+(
+  - "b"
+  + ("b" * "b")
+  - (4 * "a" * "c")
+)
+  /
+(
+  2 * "a" * "b"
+)
