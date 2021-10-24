@@ -49,21 +49,21 @@ class AstPrinter : Visitor<String> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            val expression =
+            val expression = // (-123 * (45.67)) ? ("positive") : ("negative")
             Ternary(
                 Binary(
-                            Binary(
-                                    Unary(
-                                        Token(TokenType.MINUS, "-", Null, 1),
-                                        Literal(123),
-                                    ),
-                                    Token(TokenType.STAR, "*", Null, 1),
-                                    Grouping(
-                                        Literal(45.67),
-                                    )
-                                ),
-                            Token(TokenType.GREATER, ">", Null, 1),
-                            Grouping(Literal(0))
+                    Binary(
+                        Unary(
+                            Token(TokenType.MINUS, "-", Null, 1),
+                            Literal(123),
+                        ),
+                        Token(TokenType.STAR, "*", Null, 1),
+                        Grouping(
+                            Literal(45.67),
+                        )
+                    ),
+                    Token(TokenType.GREATER, ">", Null, 1),
+                    Grouping(Literal(0))
                 ),
                 Grouping(Literal("positive")),
                 Grouping(Literal("negative"))
