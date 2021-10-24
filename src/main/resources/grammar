@@ -7,9 +7,11 @@ Binary Expression: Infix arithmetic (+, -, *, /) and logic (==, !=, <, <=, >, >=
 Parenthesis:       Pair of ( and ) wrapped around an expression
 
 // Now, the grammar production rules
-expression      -> equality
+expression      -> block
 
 // precedence rules
+block           -> equality ( "," equality )* ;
+
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
 
 comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;

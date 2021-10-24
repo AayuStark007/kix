@@ -17,7 +17,8 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    private fun expression(): Expr = equality()
+    private fun expression(): Expr = block()
+    private fun block(): Expr = parseLeftAssociative(::equality, COMMA)
     private fun equality(): Expr = parseLeftAssociative(::comparison, BANG_EQUAL, EQUAL_EQUAL)
     private fun comparison(): Expr = parseLeftAssociative(::term, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
     private fun term(): Expr = parseLeftAssociative(::factor, MINUS, PLUS)
