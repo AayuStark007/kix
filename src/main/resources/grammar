@@ -12,6 +12,9 @@ expression      -> block
 // precedence rules
 block           -> equality ( "," equality )* ;
 
+// TODO: think about this
+conditional     -> equality ? expression : expression ;
+
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
 
 comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;

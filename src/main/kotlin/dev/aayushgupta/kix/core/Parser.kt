@@ -17,6 +17,8 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
+    private fun ternary(): Expr = TODO("Implement parsing for ternary")
+
     private fun expression(): Expr = block()
     private fun block(): Expr = parseLeftAssociative(::equality, COMMA)
     private fun equality(): Expr = parseLeftAssociative(::comparison, BANG_EQUAL, EQUAL_EQUAL)
@@ -48,7 +50,6 @@ class Parser(private val tokens: List<Token>) {
         }
     }
 
-    // TODO: Use for above use cases
     private inline fun parseLeftAssociative(handle: () -> Expr, vararg types: TokenType): Expr {
         var expr = handle()
         while (match(*types)) {

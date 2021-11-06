@@ -15,7 +15,9 @@ class Interpreter : Expr.Visitor<Any> {
     }
 
     override fun visitTernaryExpr(expr: Expr.Ternary): Any {
-        TODO("Not yet implemented")
+        return if (isTruthy(expr.condition)) {
+            evaluate(expr.expTrue)
+        } else evaluate(expr.expFalse)
     }
 
     override fun visitBinaryExpr(expr: Expr.Binary): Any {
