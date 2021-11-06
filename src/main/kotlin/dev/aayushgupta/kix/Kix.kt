@@ -56,14 +56,14 @@ fun run(source: String) {
     
     val parser = Parser(tokens)
     //val now = System.nanoTime()
-    val expression = parser.parse()
+    val statements = parser.parse()
     //val parseTimeNs = System.nanoTime() - now
     //println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
 
     if (hadError) return
 
     //println(AstPrinter().print(expression))
-    interpreter.interpret(expression)
+    interpreter.interpret(statements)
 }
 
 fun error(line: Int, message: String) {
