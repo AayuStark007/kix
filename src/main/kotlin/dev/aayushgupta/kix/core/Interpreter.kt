@@ -44,10 +44,10 @@ class Interpreter : Expr.Visitor<Any> {
                 (left as Double) - (right as Double)
             }
             TokenType.PLUS -> {
-                if (left is Double && right is Double) {
+                return if (left is Double && right is Double) {
                     (left + right) // as Double
                 }
-                if (left is String && right is String) {
+                else if (left is String && right is String) {
                     (left + right) // as String
                 }
                 else throw RuntimeError(expr.operator, "Operands must be two numbers or two strings.")
