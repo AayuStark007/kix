@@ -2,6 +2,8 @@ package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.runtimeError
 import dev.aayushgupta.kix.util.Null
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class Interpreter : Expr.Visitor<Any> {
 
@@ -23,6 +25,14 @@ class Interpreter : Expr.Visitor<Any> {
     override fun visitBinaryExpr(expr: Expr.Binary): Any {
         val left = evaluate(expr.left)
         val right = evaluate(expr.right)
+
+        /**
+         * TODO:
+         *  - Support for comparison b/w strings
+         *  - Explicit check for operand type mismatch to generate better runtime error messages
+         *  - Detect invalid scenarios like, divide by 0, etc
+         *  - Support for more operators like ^, %, etc
+         */
 
         return when (expr.operator.type) {
             TokenType.GREATER -> {
@@ -46,13 +56,7 @@ class Interpreter : Expr.Visitor<Any> {
                 (left as Double) - (right as Double)
             }
             TokenType.PLUS -> {
-                return if (left is Double && right is Double) {
-                    (left + right) // as Double
-                }
-                else if (left is String && right is String) {
-                    (left + right) // as String
-                }
-                else throw RuntimeError(expr.operator, "Operands must be two numbers or two strings.")
+                evalPlusOperands(expr.operator, left, right)
             }
             TokenType.SLASH -> {
                 checkNumberOperands(expr.operator, left, right)
@@ -66,6 +70,18 @@ class Interpreter : Expr.Visitor<Any> {
             TokenType.EQUAL_EQUAL -> isEqual(left, right)
             // Unreachable
             else -> Null
+        }
+    }
+
+    private fun evalPlusOperands(operator: Token, left: Any, right: Any): Any {
+        return when {
+            (left is String && right is String) -> left + right
+            (left is String && right is Double) ->
+                "$left${BigDecimal(right).setScale(0, RoundingMode.HALF_UP)}"
+            (left is Double && right is String) ->
+                "${BigDecimal(left).setScale(0, RoundingMode.HALF_UP)}$right"
+            (left is Double && right is Double) -> left + right
+            else -> throw RuntimeError(operator, "Invalid operands: $left and $right for '+'")
         }
     }
 
