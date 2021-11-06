@@ -19,6 +19,13 @@ fun main(args: Array<String>) {
             "Unary     -> val operator: Token, val right: Expr"
         )
     )
+
+    defineAst(
+        outputDir, "Stmt", listOf(
+            "Expression -> val expression: Expr",
+            "Print      -> val expression: Expr"
+        )
+    )
 }
 
 @Throws(IOException::class)

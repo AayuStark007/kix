@@ -7,6 +7,18 @@ Binary Expression: Infix arithmetic (+, -, *, /) and logic (==, !=, <, <=, >, >=
 Parenthesis:       Pair of ( and ) wrapped around an expression
 
 // Now, the grammar production rules
+
+// Statement
+program         -> statement* EOF ;
+
+statement       -> exprStmt
+                 | printStmt ;
+
+exprStmt        -> expression ";" ;
+
+printStmt       -> "print" expression ";" ;
+
+// Expression
 expression      -> block
 
 // precedence rules
