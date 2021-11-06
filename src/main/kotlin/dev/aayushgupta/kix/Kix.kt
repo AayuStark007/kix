@@ -1,9 +1,7 @@
 package dev.aayushgupta.kix
 
+import dev.aayushgupta.kix.core.*
 import dev.aayushgupta.kix.core.KixScanner
-import dev.aayushgupta.kix.core.Parser
-import dev.aayushgupta.kix.core.Token
-import dev.aayushgupta.kix.core.TokenType
 import dev.aayushgupta.kix.util.AstPrinter
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -12,7 +10,10 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.system.exitProcess
 
+private val interpreter = Interpreter()
+
 var hadError: Boolean = false
+var hadRuntimeError: Boolean = false
 
 fun main(args: Array<String>) {
     if (args.size > 1) {
@@ -43,6 +44,7 @@ fun runFile(path: String) {
 
     // Indicate error in exit code
     if (hadError) exitProcess(65)
+    if (hadRuntimeError) exitProcess(70)
 }
 
 fun run(source: String) {
@@ -60,7 +62,8 @@ fun run(source: String) {
 
     if (hadError) return
 
-    println(AstPrinter().print(expression))
+    //println(AstPrinter().print(expression))
+    interpreter.interpret(expression)
 }
 
 fun error(line: Int, message: String) {
@@ -78,4 +81,9 @@ fun error(token: Token, message: String) {
     } else {
         report(token.line, " at '${token.lexeme}'", message)
     }
+}
+
+fun runtimeError(error: RuntimeError) {
+    System.err.println("${error.message}\n[line ${error.token.line}]")
+    hadRuntimeError = true
 }

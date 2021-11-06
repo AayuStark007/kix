@@ -1,8 +1,19 @@
 package dev.aayushgupta.kix.core
 
+import dev.aayushgupta.kix.runtimeError
 import dev.aayushgupta.kix.util.Null
 
 class Interpreter : Expr.Visitor<Any> {
+
+    fun interpret(expression: Expr) {
+        try {
+            val value = evaluate(expression)
+            println(stringify(value))
+        } catch (error: RuntimeError) {
+            runtimeError(error)
+        }
+    }
+
     override fun visitTernaryExpr(expr: Expr.Ternary): Any {
         TODO("Not yet implemented")
     }
@@ -105,5 +116,19 @@ class Interpreter : Expr.Visitor<Any> {
         if (a == Null || a is Null) return false
 
         return a == b
+    }
+
+    private fun stringify(obj: Any): String {
+        if (obj == Null || obj is Null) return "nil"
+
+        if (obj is Double) {
+            var text = obj.toString()
+            if (text.endsWith(".0")) {
+                text = text.substring(0, text.length - 2)
+            }
+            return text
+        }
+
+        return obj.toString()
     }
 }
