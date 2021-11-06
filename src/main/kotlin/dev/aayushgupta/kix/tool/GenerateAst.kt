@@ -16,14 +16,18 @@ fun main(args: Array<String>) {
             "Binary    -> val left: Expr, val operator: Token, val right: Expr",
             "Grouping  -> val expression: Expr",
             "Literal   -> val value: Any",
-            "Unary     -> val operator: Token, val right: Expr"
+            "Unary     -> val operator: Token, val right: Expr",
+            "Variable  -> val name: Token",
+            "Null      -> none"
         )
     )
 
     defineAst(
         outputDir, "Stmt", listOf(
             "Expression -> val expression: Expr",
-            "Print      -> val expression: Expr"
+            "Print      -> val expression: Expr",
+            "Var        -> val name: Token, val initializer: Expr",
+            "Null       -> none"
         )
     )
 }
@@ -71,7 +75,11 @@ private fun defineType(
     writer: PrintWriter, baseName: String,
     className: String, fields: String
 ) {
-    writer.println("\tclass $className($fields): $baseName() {")
+    if (fields == "none") {
+        writer.println("\tobject $className: $baseName() {")
+    } else {
+        writer.println("\tclass $className($fields): $baseName() {")
+    }
 
     // Visitor pattern
     writer.println("\t\toverride fun <R> accept(visitor: Visitor<R>): R {")

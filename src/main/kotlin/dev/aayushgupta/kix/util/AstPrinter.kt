@@ -32,6 +32,10 @@ class AstPrinter : Visitor<String> {
         return parenthesize(expr.operator.lexeme, expr.right)
     }
 
+    override fun visitNullExpr(expr: Expr.Null): String {
+        return "nil"
+    }
+
     private fun parenthesize(name: String, vararg exprs: Expr): String {
         val builder = StringBuilder()
 
@@ -72,5 +76,10 @@ class AstPrinter : Visitor<String> {
             println(AstPrinter().print(expression))
         }
     }
+
+    override fun visitVariableExpr(expr: Variable): String {
+        TODO("Not yet implemented")
+    }
+
 
 }

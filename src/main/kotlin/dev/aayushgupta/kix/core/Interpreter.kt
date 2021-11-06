@@ -108,6 +108,10 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         }
     }
 
+    override fun visitNullExpr(expr: Expr.Null): Any {
+        return Null
+    }
+
     private fun checkNumberOperand(operator: Token, operand: Any) {
         if (operand is Double) return
         throw RuntimeError(operator, "Operand must be a number.")
@@ -133,6 +137,10 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     override fun visitPrintStmt(stmt: Stmt.Print) {
         val value = evaluate(stmt.expression)
         println(stringify(value))
+    }
+
+    override fun visitNullStmt(stmt: Stmt.Null) {
+        // Do nothing
     }
 
     // false and nil are false, and everything else is true
@@ -163,4 +171,14 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
         return obj.toString()
     }
+
+    override fun visitVariableExpr(expr: Expr.Variable): Any {
+        TODO("Not yet implemented")
+    }
+
+    override fun visitVarStmt(stmt: Stmt.Var) {
+        TODO("Not yet implemented")
+    }
+
+
 }

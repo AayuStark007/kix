@@ -4,6 +4,8 @@ sealed class Stmt {
 	interface Visitor<R> {
 		fun visitExpressionStmt(stmt: Expression): R
 		fun visitPrintStmt(stmt: Print): R
+		fun visitVarStmt(stmt: Var): R
+		fun visitNullStmt(stmt: Null): R
 	}
 
 	class Expression(val expression: Expr): Stmt() {
@@ -15,6 +17,18 @@ sealed class Stmt {
 	class Print(val expression: Expr): Stmt() {
 		override fun <R> accept(visitor: Visitor<R>): R {
 			return visitor.visitPrintStmt(this)
+		}
+	}
+
+	class Var(val name: Token, val initializer: Expr): Stmt() {
+		override fun <R> accept(visitor: Visitor<R>): R {
+			return visitor.visitVarStmt(this)
+		}
+	}
+
+	object Null: Stmt() {
+		override fun <R> accept(visitor: Visitor<R>): R {
+			return visitor.visitNullStmt(this)
 		}
 	}
 
