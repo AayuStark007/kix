@@ -1,11 +1,13 @@
 package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.runtimeError
-import dev.aayushgupta.kix.util.Null
+import dev.aayushgupta.kix.util.NULL
 import java.math.BigDecimal
 import java.math.RoundingMode
 
 class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
+
+    private val environment = Environment()
 
     fun interpret(statements: List<Stmt>) {
         try {
@@ -70,7 +72,7 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
             TokenType.BANG_EQUAL -> !isEqual(left, right)
             TokenType.EQUAL_EQUAL -> isEqual(left, right)
             // Unreachable
-            else -> Null
+            else -> NULL
         }
     }
 
@@ -104,12 +106,16 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
                 -(right as Double)
             }
             // Unreachable
-            else -> Null
+            else -> NULL
         }
     }
 
+    override fun visitVariableExpr(expr: Expr.Variable): Any {
+        return environment.get(expr.name)
+    }
+
     override fun visitNullExpr(expr: Expr.Null): Any {
-        return Null
+        return NULL
     }
 
     private fun checkNumberOperand(operator: Token, operand: Any) {
@@ -139,27 +145,36 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         println(stringify(value))
     }
 
+    override fun visitVarStmt(stmt: Stmt.Var) {
+        var value: Any = NULL
+        if (stmt.initializer != Expr.Null) {
+            value = evaluate(stmt.initializer)
+        }
+
+        environment.define(stmt.name.lexeme, value)
+    }
+
     override fun visitNullStmt(stmt: Stmt.Null) {
         // Do nothing
     }
 
     // false and nil are false, and everything else is true
     private fun isTruthy(obj: Any): Boolean {
-        if (obj is Null) return false
-        if (obj == Null) return false
+        if (obj is NULL) return false
+        if (obj == NULL) return false
         if (obj is Boolean) return obj
         return true
     }
 
     private fun isEqual(a: Any, b: Any): Boolean {
-        if (a == Null && b == Null) return true
-        if (a == Null || a is Null) return false
+        if (a == NULL && b == NULL) return true
+        if (a == NULL || a is NULL) return false
 
         return a == b
     }
 
     private fun stringify(obj: Any): String {
-        if (obj == Null || obj is Null) return "nil"
+        if (obj == NULL || obj is NULL) return "nil"
 
         if (obj is Double) {
             var text = obj.toString()
@@ -171,14 +186,4 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
 
         return obj.toString()
     }
-
-    override fun visitVariableExpr(expr: Expr.Variable): Any {
-        TODO("Not yet implemented")
-    }
-
-    override fun visitVarStmt(stmt: Stmt.Var) {
-        TODO("Not yet implemented")
-    }
-
-
 }

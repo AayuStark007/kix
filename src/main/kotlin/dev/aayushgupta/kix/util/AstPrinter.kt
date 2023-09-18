@@ -24,7 +24,7 @@ class AstPrinter : Visitor<String> {
     }
 
     override fun visitLiteralExpr(expr: Literal): String {
-        if (expr.value == Null) return "nil"
+        if (expr.value == NULL) return "nil"
         return "${expr.value}"
     }
 
@@ -58,15 +58,15 @@ class AstPrinter : Visitor<String> {
                 Binary(
                     Binary(
                         Unary(
-                            Token(TokenType.MINUS, "-", Null, 1),
+                            Token(TokenType.MINUS, "-", NULL, 1),
                             Literal(123),
                         ),
-                        Token(TokenType.STAR, "*", Null, 1),
+                        Token(TokenType.STAR, "*", NULL, 1),
                         Grouping(
                             Literal(45.67),
                         )
                     ),
-                    Token(TokenType.GREATER, ">", Null, 1),
+                    Token(TokenType.GREATER, ">", NULL, 1),
                     Grouping(Literal(0))
                 ),
                 Grouping(Literal("positive")),

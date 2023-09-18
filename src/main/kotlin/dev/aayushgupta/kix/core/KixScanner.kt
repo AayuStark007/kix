@@ -2,7 +2,7 @@ package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.core.TokenType.*
 import dev.aayushgupta.kix.error
-import dev.aayushgupta.kix.util.Null
+import dev.aayushgupta.kix.util.NULL
 
 internal class KixScanner(private val source: String) {
     private val tokens = mutableListOf<Token>()
@@ -41,7 +41,7 @@ internal class KixScanner(private val source: String) {
             scanToken()
         }
 
-        tokens.add(Token(EOF, "", Null, line))
+        tokens.add(Token(EOF, "", NULL, line))
         return tokens
     }
 
@@ -90,7 +90,7 @@ internal class KixScanner(private val source: String) {
     private fun advance() = source[current++]
 
     private fun addToken(type: TokenType) {
-        addToken(type, Null)
+        addToken(type, NULL)
     }
 
     private fun addToken(type: TokenType, literal: Any) {

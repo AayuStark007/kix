@@ -1,7 +1,7 @@
 package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.core.TokenType.*
-import dev.aayushgupta.kix.util.Null
+import dev.aayushgupta.kix.util.NULL
 
 class Parser(private val tokens: List<Token>) {
 
@@ -78,7 +78,7 @@ class Parser(private val tokens: List<Token>) {
         return when {
             match(FALSE) -> Expr.Literal(false)
             match(TRUE) -> Expr.Literal(true)
-            match(NIL) -> Expr.Literal(Null)
+            match(NIL) -> Expr.Literal(NULL)
             match(NUMBER, STRING) -> Expr.Literal(previous().literal)
             match(IDENTIFIER) -> Expr.Variable(previous())
             match(LEFT_PAREN) -> {
