@@ -16,6 +16,7 @@ var hadError: Boolean = false
 var hadRuntimeError: Boolean = false
 
 fun main(args: Array<String>) {
+    println("hello")
     if (args.size > 1) {
         println("Usage: kix [script]")
         exitProcess(64)
@@ -53,7 +54,7 @@ fun run(source: String) {
     val tokens = scanner.scanTokens()
     //val scanDurationNs = System.nanoTime() - scanStart
     //println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
-    
+
     val parser = Parser(tokens)
     //val now = System.nanoTime()
     val statements = parser.parse()
