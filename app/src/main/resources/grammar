@@ -17,7 +17,10 @@ declaration     -> varDecl
 varDecl         -> "var" IDENTIFIER ( "=" expression )? ";" ;
 
 statement       -> exprStmt
-                 | printStmt ;
+                 | printStmt
+                 | block ";" ;
+
+block           -> "{" declaration* "}" ";" ;
 
 exprStmt        -> expression ";" ;
 
@@ -28,12 +31,10 @@ expression      -> assignment ";" ;
 assignment      -> IDENTIFIER "=" assignment
                  | equality ";" ;
 
-// precedence rules
-block           -> equality ( "," equality )* ;
-
 // TODO: think about this
 conditional     -> equality ? expression : expression ;
 
+// precedence rules
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
 
 comparison      -> term ( ( ">" | ">=" | "<" | "<=" ) term )* ;

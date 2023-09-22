@@ -2,18 +2,15 @@ package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.util.NULL
 
-internal class Environment {
+internal class Environment(private val enclosing: Environment? = null) {
+
     private val values = hashMapOf<String, Any>()
 
     fun get(name: Token): Any {
-        if (values.containsKey(name.lexeme)) {
-            with (values.getOrDefault(name.lexeme, NULL)) {
-                if (this == NULL) throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
-                else return this
-            }
+        with (values.getOrDefault(name.lexeme, NULL)) {
+            if (this == NULL) return enclosing?.get(name) ?: throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
+            else return this
         }
-
-        throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
     }
 
     fun define(name: String, value: Any) {
@@ -26,6 +23,6 @@ internal class Environment {
             return
         }
 
-        throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
+        enclosing?.assign(name, value) ?: throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
     }
 }
