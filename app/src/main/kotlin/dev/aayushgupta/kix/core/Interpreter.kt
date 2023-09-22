@@ -19,6 +19,12 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
         }
     }
 
+    override fun visitAssignExpr(expr: Expr.Assign): Any {
+        val value = evaluate(expr.value)
+        environment.assign(expr.name, value)
+        return value
+    }
+
     override fun visitTernaryExpr(expr: Expr.Ternary): Any {
         return if (isTruthy(expr.condition)) {
             evaluate(expr.expTrue)

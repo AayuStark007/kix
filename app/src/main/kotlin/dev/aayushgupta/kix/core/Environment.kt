@@ -8,7 +8,7 @@ internal class Environment {
     fun get(name: Token): Any {
         if (values.containsKey(name.lexeme)) {
             with (values.getOrDefault(name.lexeme, NULL)) {
-                if (this == NULL)  throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
+                if (this == NULL) throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
                 else return this
             }
         }
@@ -19,8 +19,13 @@ internal class Environment {
     fun define(name: String, value: Any) {
         values[name] = value
     }
-}
 
-//internal class Environment {
-//    private val values: Map<String, Any> = HashMap()
-//}
+    fun assign(name: Token, value: Any) {
+        if (values.containsKey(name.lexeme)) {
+            values[name.lexeme] = value
+            return
+        }
+
+        throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
+    }
+}

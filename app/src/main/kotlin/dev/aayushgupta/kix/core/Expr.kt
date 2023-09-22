@@ -2,6 +2,7 @@ package dev.aayushgupta.kix.core
 
 sealed class Expr {
 	interface Visitor<R> {
+		fun visitAssignExpr(expr: Assign): R
 		fun visitTernaryExpr(expr: Ternary): R
 		fun visitBinaryExpr(expr: Binary): R
 		fun visitGroupingExpr(expr: Grouping): R
@@ -9,6 +10,12 @@ sealed class Expr {
 		fun visitUnaryExpr(expr: Unary): R
 		fun visitVariableExpr(expr: Variable): R
 		fun visitNullExpr(expr: Null): R
+	}
+
+	class Assign(val name: Token, val value: Expr): Expr() {
+		override fun <R> accept(visitor: Visitor<R>): R {
+			return visitor.visitAssignExpr(this)
+		}
 	}
 
 	class Ternary(val condition: Expr, val expTrue: Expr, val expFalse: Expr): Expr() {

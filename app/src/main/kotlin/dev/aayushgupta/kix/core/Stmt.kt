@@ -1,6 +1,5 @@
 package dev.aayushgupta.kix.core
 
-//  Where an expression’s main job is to produce a value, a statement’s job is to produce an effect.
 sealed class Stmt {
 	interface Visitor<R> {
 		fun visitExpressionStmt(stmt: Expression): R

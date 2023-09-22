@@ -24,7 +24,9 @@ exprStmt        -> expression ";" ;
 printStmt       -> "print" expression ";" ;
 
 // Expression
-expression      -> block
+expression      -> assignment ";" ;
+assignment      -> IDENTIFIER "=" assignment
+                 | equality ";" ;
 
 // precedence rules
 block           -> equality ( "," equality )* ;

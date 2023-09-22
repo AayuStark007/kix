@@ -11,6 +11,10 @@ class AstPrinter : Visitor<String> {
         return expr.accept(this)
     }
 
+    override fun visitAssignExpr(expr: Assign): String {
+        return parenthesize("assign", Literal(expr.name), expr.value)
+    }
+
     override fun visitTernaryExpr(expr: Ternary): String {
         return parenthesize("ternary", expr.condition, expr.expTrue, expr.expFalse)
     }
@@ -78,7 +82,7 @@ class AstPrinter : Visitor<String> {
     }
 
     override fun visitVariableExpr(expr: Variable): String {
-        TODO("Not yet implemented")
+        return parenthesize("variable", Literal(expr.name))
     }
 
 

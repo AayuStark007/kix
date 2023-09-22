@@ -58,7 +58,26 @@ class Parser(private val tokens: List<Token>) {
 
     private fun ternary(): Expr = TODO("Implement parsing for ternary")
 
-    private fun expression(): Expr = block()
+    private fun expression(): Expr = assignment()
+
+    private fun assignment(): Expr {
+        val expr = equality()
+
+        if (match(EQUAL)) {
+            val equals = previous()
+            val value = assignment()
+
+            if (expr is Expr.Variable) {
+                val name = expr.name
+                return Expr.Assign(name, value)
+            }
+
+            error(equals, "Invalid assignment target.")
+        }
+
+        return expr
+    }
+
     private fun block(): Expr = parseLeftAssociative(::equality, COMMA)
     private fun equality(): Expr = parseLeftAssociative(::comparison, BANG_EQUAL, EQUAL_EQUAL)
     private fun comparison(): Expr = parseLeftAssociative(::term, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
