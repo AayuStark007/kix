@@ -93,9 +93,12 @@ class AstPrinter : Expr.Visitor<String>, Stmt.Visitor<String> {
     }
 
     override fun visitBlockStmt(stmt: Stmt.Block): String {
-        return "{\n" +
-                "\t${stmt.statements.forEach { it.accept(this@AstPrinter) + "\n" }}" +
-                "}"
+        val builder = StringBuilder().apply {
+            append("{ ")
+            stmt.statements.forEach { this@apply.append("${it.accept(this@AstPrinter)} ") }
+            append(" }")
+        }
+        return builder.toString()
     }
 
     override fun visitExpressionStmt(stmt: Stmt.Expression): String {
