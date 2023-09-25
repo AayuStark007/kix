@@ -68,12 +68,10 @@ class Parser(private val tokens: List<Token>) {
         return Stmt.Expression(expr)
     }
 
-    private fun ternary(): Expr = TODO("Implement parsing for ternary")
-
     private fun expression(): Expr = assignment()
 
     private fun assignment(): Expr {
-        val expr = equality()
+        val expr = ternary()
 
         if (match(EQUAL)) {
             val equals = previous()
@@ -85,6 +83,19 @@ class Parser(private val tokens: List<Token>) {
             }
 
             error(equals, "Invalid assignment target.")
+        }
+
+        return expr
+    }
+
+    private fun ternary(): Expr {
+        val expr = equality()
+
+        if (match(QUESTION_MARK)) {
+            val trueBranch = expression()
+            consume(COLON, "Invalid conditional, expected ':'")
+            val falseBranch = expression()
+            return Expr.Ternary(expr, trueBranch, falseBranch)
         }
 
         return expr

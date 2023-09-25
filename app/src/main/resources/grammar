@@ -8,31 +8,34 @@ Parenthesis:       Pair of ( and ) wrapped around an expression
 
 // Now, the grammar production rules
 
-// Statement
+// Program
 program         -> declaration* EOF ;
 
 declaration     -> varDecl
                  | statement ;
 
-varDecl         -> "var" IDENTIFIER ( "=" expression )? ";" ;
+// Declarations
+varDecl         -> "var" IDENTIFIER ( "=" expression )? ;
 
 statement       -> exprStmt
                  | printStmt
-                 | block ";" ;
+                 | blockStmt ;
 
-block           -> "{" declaration* "}" ";" ;
+// Statements
+exprStmt        -> expression ;
 
-exprStmt        -> expression ";" ;
+printStmt       -> "print" expression ;
 
-printStmt       -> "print" expression ";" ;
+blockStmt       -> "{" declaration* "}" ;
+
 
 // Expression
-expression      -> assignment ";" ;
+expression      -> assignment ;
 assignment      -> IDENTIFIER "=" assignment
-                 | equality ";" ;
+                 | ternary ;
 
 // TODO: think about this
-conditional     -> equality ? expression : expression ;
+ternary     -> equality (? expression : expression)* ;
 
 // precedence rules
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;

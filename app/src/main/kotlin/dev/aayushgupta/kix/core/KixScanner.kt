@@ -75,6 +75,8 @@ internal class KixScanner(private val source: String) {
             }
             '\n' -> line++
             '"' -> string()
+            '?' -> addToken(QUESTION_MARK)
+            ':' -> addToken(COLON)
             else -> {
                 if (isDigit(c)) {
                     number()

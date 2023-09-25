@@ -27,7 +27,7 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     }
 
     override fun visitTernaryExpr(expr: Expr.Ternary): Any {
-        return if (isTruthy(expr.condition)) {
+        return if (isTruthy(evaluate(expr.condition))) {
             evaluate(expr.expTrue)
         } else evaluate(expr.expFalse)
     }
