@@ -2,13 +2,20 @@ package dev.aayushgupta.kix.util
 
 import dev.aayushgupta.kix.core.Expr
 import dev.aayushgupta.kix.core.Expr.*
+import dev.aayushgupta.kix.core.Stmt
 import dev.aayushgupta.kix.core.Token
 import dev.aayushgupta.kix.core.TokenType
 
-class AstPrinter : Visitor<String> {
+class AstPrinter : Expr.Visitor<String>, Stmt.Visitor<String> {
 
-    fun print(expr: Expr): String {
-        return expr.accept(this)
+    fun print(stmts: List<Stmt>) {
+        stmts.forEach {
+            println(it.accept(this@AstPrinter))
+        }
+    }
+
+    fun print(expr: Expr) {
+        println(expr.accept(this))
     }
 
     override fun visitAssignExpr(expr: Assign): String {
@@ -36,7 +43,7 @@ class AstPrinter : Visitor<String> {
         return parenthesize(expr.operator.lexeme, expr.right)
     }
 
-    override fun visitNullExpr(expr: Expr.Null): String {
+    override fun visitNullExpr(expr: Null): String {
         return "nil"
     }
 
@@ -58,26 +65,26 @@ class AstPrinter : Visitor<String> {
         @JvmStatic
         fun main(args: Array<String>) {
             val expression = // (-123 * (45.67)) ? ("positive") : ("negative")
-            Ternary(
-                Binary(
+                Ternary(
                     Binary(
-                        Unary(
-                            Token(TokenType.MINUS, "-", NULL, 1),
-                            Literal(123),
+                        Binary(
+                            Unary(
+                                Token(TokenType.MINUS, "-", NULL, 1),
+                                Literal(123),
+                            ),
+                            Token(TokenType.STAR, "*", NULL, 1),
+                            Grouping(
+                                Literal(45.67),
+                            )
                         ),
-                        Token(TokenType.STAR, "*", NULL, 1),
-                        Grouping(
-                            Literal(45.67),
-                        )
+                        Token(TokenType.GREATER, ">", NULL, 1),
+                        Grouping(Literal(0))
                     ),
-                    Token(TokenType.GREATER, ">", NULL, 1),
-                    Grouping(Literal(0))
-                ),
-                Grouping(Literal("positive")),
-                Grouping(Literal("negative"))
-            )
+                    Grouping(Literal("positive")),
+                    Grouping(Literal("negative"))
+                )
 
-            println(AstPrinter().print(expression))
+            AstPrinter().print(expression)
         }
     }
 
@@ -85,5 +92,25 @@ class AstPrinter : Visitor<String> {
         return parenthesize("variable", Literal(expr.name))
     }
 
+    override fun visitBlockStmt(stmt: Stmt.Block): String {
+        return "{\n" +
+                "\t${stmt.statements.forEach { it.accept(this@AstPrinter) + "\n" }}" +
+                "}"
+    }
 
+    override fun visitExpressionStmt(stmt: Stmt.Expression): String {
+        return stmt.expression.accept(this)
+    }
+
+    override fun visitPrintStmt(stmt: Stmt.Print): String {
+        return parenthesize("print", stmt.expression)
+    }
+
+    override fun visitVarStmt(stmt: Stmt.Var): String {
+        return parenthesize("var ${stmt.name}", stmt.initializer)
+    }
+
+    override fun visitNullStmt(stmt: Stmt.Null): String {
+        return parenthesize("null")
+    }
 }

@@ -71,8 +71,10 @@ internal class KixScanner(private val source: String) {
                     addToken(SLASH)
                 }
             }
+
             ' ', '\r', '\t' -> {
             }
+
             '\n' -> line++
             '"' -> string()
             '?' -> addToken(QUESTION_MARK)

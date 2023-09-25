@@ -128,6 +128,7 @@ class Parser(private val tokens: List<Token>) {
                 consume(RIGHT_PAREN, "Expect ')' after expression.")
                 Expr.Grouping(expr)
             }
+
             else -> throw error(peek(), "Expect expression.")
         }
     }

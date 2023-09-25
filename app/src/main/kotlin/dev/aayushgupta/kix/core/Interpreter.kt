@@ -49,33 +49,41 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) > (right as Double)
             }
+
             TokenType.GREATER_EQUAL -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) >= (right as Double)
             }
+
             TokenType.LESS -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) < (right as Double)
             }
+
             TokenType.LESS_EQUAL -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) <= (right as Double)
             }
+
             TokenType.MINUS -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) - (right as Double)
             }
+
             TokenType.PLUS -> {
                 evalPlusOperands(expr.operator, left, right)
             }
+
             TokenType.SLASH -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) / (right as Double)
             }
+
             TokenType.STAR -> {
                 checkNumberOperands(expr.operator, left, right)
                 (left as Double) * (right as Double)
             }
+
             TokenType.BANG_EQUAL -> !isEqual(left, right)
             TokenType.EQUAL_EQUAL -> isEqual(left, right)
             // Unreachable
@@ -88,8 +96,10 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
             (left is String && right is String) -> left + right
             (left is String && right is Double) ->
                 "$left${BigDecimal(right).setScale(0, RoundingMode.HALF_UP)}"
+
             (left is Double && right is String) ->
                 "${BigDecimal(left).setScale(0, RoundingMode.HALF_UP)}$right"
+
             (left is Double && right is Double) -> left + right
             else -> throw RuntimeError(operator, "Invalid operands: $left and $right for '+'")
         }
@@ -106,7 +116,7 @@ class Interpreter : Expr.Visitor<Any>, Stmt.Visitor<Unit> {
     override fun visitUnaryExpr(expr: Expr.Unary): Any {
         val right = evaluate(expr.right)
 
-        return when(expr.operator.type) {
+        return when (expr.operator.type) {
             TokenType.BANG -> !isTruthy(right)
             TokenType.MINUS -> {
                 checkNumberOperand(expr.operator, right)

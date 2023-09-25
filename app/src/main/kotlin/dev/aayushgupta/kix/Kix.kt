@@ -1,7 +1,9 @@
 package dev.aayushgupta.kix
 
+import com.xenomachina.argparser.ArgParser
+import com.xenomachina.argparser.default
 import dev.aayushgupta.kix.core.*
-import dev.aayushgupta.kix.core.KixScanner
+import dev.aayushgupta.kix.util.AstPrinter
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.nio.charset.Charset
@@ -13,15 +15,12 @@ private val interpreter = Interpreter()
 
 var hadError: Boolean = false
 var hadRuntimeError: Boolean = false
+var shouldPrintAst: Boolean = false
 
 fun main(args: Array<String>) {
-    if (args.size > 1) {
-        println("Usage: kix [script]")
-        exitProcess(64)
-    } else if (args.size == 1) {
-        runFile(args[0])
-    } else {
-        runPrompt()
+    ArgParser(args).parseInto(::KixArgs).run {
+        shouldPrintAst = this.printAst
+        if (this.sourceFile.isBlank()) runPrompt() else runFile(this.sourceFile)
     }
 }
 
@@ -61,7 +60,9 @@ fun run(source: String) {
 
     if (hadError) return
 
-    //println(AstPrinter().print(expression))
+    if (shouldPrintAst) {
+        AstPrinter().print(statements)
+    }
     interpreter.interpret(statements)
 }
 
@@ -85,4 +86,15 @@ fun error(token: Token, message: String) {
 fun runtimeError(error: RuntimeError) {
     System.err.println("${error.message}\n[line ${error.token.line}]")
     hadRuntimeError = true
+}
+
+
+class KixArgs(parser: ArgParser) {
+    val printAst by parser.flagging(
+        "--print-ast",
+        help = "print AST for parsed code"
+    )
+
+    val sourceFile by parser.positional("source filename, omit for REPL mode")
+        .default("")
 }

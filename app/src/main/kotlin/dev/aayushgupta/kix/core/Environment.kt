@@ -7,8 +7,11 @@ internal class Environment(private val enclosing: Environment? = null) {
     private val values = hashMapOf<String, Any>()
 
     fun get(name: Token): Any {
-        with (values.getOrDefault(name.lexeme, NULL)) {
-            if (this == NULL) return enclosing?.get(name) ?: throw RuntimeError(name, "Undefined variable '${name.lexeme}'.")
+        with(values.getOrDefault(name.lexeme, NULL)) {
+            if (this == NULL) return enclosing?.get(name) ?: throw RuntimeError(
+                name,
+                "Undefined variable '${name.lexeme}'."
+            )
             else return this
         }
     }
