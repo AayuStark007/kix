@@ -6,10 +6,12 @@ import dev.aayushgupta.kix.core.Stmt
 import dev.aayushgupta.kix.core.Token
 import dev.aayushgupta.kix.core.TokenType
 
-class AstPrinter : Expr.Visitor<String>, Stmt.Visitor<String> {
+class AstPrinter : Visitor<String>, Stmt.Visitor<String> {
 
-    fun print(stmts: List<Stmt>) {
-        stmts.forEach {
+    private var currentIdent = 0
+
+    fun print(statements: List<Stmt>) {
+        statements.forEach {
             println(it.accept(this@AstPrinter))
         }
     }
@@ -94,9 +96,17 @@ class AstPrinter : Expr.Visitor<String>, Stmt.Visitor<String> {
 
     override fun visitBlockStmt(stmt: Stmt.Block): String {
         val builder = StringBuilder().apply {
-            append("{ ")
-            stmt.statements.forEach { this@apply.append("${it.accept(this@AstPrinter)} ") }
-            append(" }")
+            append("{\n")
+
+            currentIdent++
+            stmt.statements.forEach {
+                IntRange(0, currentIdent - 1).forEach { _ -> append("\t") }
+                this@apply.append("${it.accept(this@AstPrinter)}\n")
+            }
+            currentIdent--
+
+            IntRange(0, currentIdent - 1).forEach { _ -> append("\t") }
+            append("}")
         }
         return builder.toString()
     }
