@@ -39,10 +39,10 @@ class Parser(private val tokens: List<Token>) {
         return Stmt.Var(name, initializer)
     }
 
-    private fun statement(): Stmt {
-        if (match(PRINT)) return printStatement()
-        if (match(LEFT_BRACE)) return Stmt.Block(block())
-        return expressionStatement()
+    private fun statement(): Stmt = when {
+        match(PRINT) -> printStatement()
+        match(LEFT_BRACE) -> Stmt.Block(block())
+        else -> expressionStatement()
     }
 
     private fun printStatement(): Stmt {
@@ -116,21 +116,18 @@ class Parser(private val tokens: List<Token>) {
         return primary()
     }
 
-    private fun primary(): Expr {
-        return when {
-            match(FALSE) -> Expr.Literal(false)
-            match(TRUE) -> Expr.Literal(true)
-            match(NIL) -> Expr.Literal(NULL)
-            match(NUMBER, STRING) -> Expr.Literal(previous().literal)
-            match(IDENTIFIER) -> Expr.Variable(previous())
-            match(LEFT_PAREN) -> {
-                val expr = expression()
-                consume(RIGHT_PAREN, "Expect ')' after expression.")
-                Expr.Grouping(expr)
-            }
-
-            else -> throw error(peek(), "Expect expression.")
+    private fun primary(): Expr = when {
+        match(FALSE) -> Expr.Literal(false)
+        match(TRUE) -> Expr.Literal(true)
+        match(NIL) -> Expr.Literal(NULL)
+        match(NUMBER, STRING) -> Expr.Literal(previous().literal)
+        match(IDENTIFIER) -> Expr.Variable(previous())
+        match(LEFT_PAREN) -> {
+            val expr = expression()
+            consume(RIGHT_PAREN, "Expect ')' after expression.")
+            Expr.Grouping(expr)
         }
+        else -> throw error(peek(), "Expect expression.")
     }
 
     private inline fun parseLeftAssociative(handle: () -> Expr, vararg types: TokenType): Expr {

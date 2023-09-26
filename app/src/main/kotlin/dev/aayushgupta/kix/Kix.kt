@@ -46,7 +46,7 @@ fun runFile(path: String) {
 }
 
 fun run(source: String) {
-    val scanner = KixScanner(source)
+    val scanner = Scanner(source)
     //val scanStart = System.nanoTime()
     val tokens = scanner.scanTokens()
     //val scanDurationNs = System.nanoTime() - scanStart

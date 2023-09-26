@@ -4,7 +4,7 @@ import dev.aayushgupta.kix.core.TokenType.*
 import dev.aayushgupta.kix.error
 import dev.aayushgupta.kix.util.NULL
 
-internal class KixScanner(private val source: String) {
+internal class Scanner(private val source: String) {
     private val tokens = mutableListOf<Token>()
 
     private var start = 0
