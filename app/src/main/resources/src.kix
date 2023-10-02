@@ -44,3 +44,13 @@ print nested = a < 50 ? true : (a > 50 ? "troo" : "fols");
 
 print a > 50 ? tern = "gt" : tern = "ls";
 print tern;
+
+if (a > 50)
+    print "gt";
+else print "lt";
+
+var a1 = 50.1;
+if (a1 < 50)
+    print "a1 is less than 50";
+else if (a1 == 50) print "a1 is 50";
+else print "a1 is greater than 50";

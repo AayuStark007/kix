@@ -9,6 +9,9 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.time.Clock
+import java.time.Duration
+import java.util.GregorianCalendar
 import kotlin.system.exitProcess
 
 private val interpreter = Interpreter()
@@ -47,23 +50,31 @@ fun runFile(path: String) {
 
 fun run(source: String) {
     val scanner = Scanner(source)
-    //val scanStart = System.nanoTime()
+    val scanStart = System.nanoTime()
     val tokens = scanner.scanTokens()
-    //val scanDurationNs = System.nanoTime() - scanStart
-    //println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
+    val scanDurationNs = System.nanoTime() - scanStart
 
     val parser = Parser(tokens)
-    //val now = System.nanoTime()
+    val parseStart = System.nanoTime()
     val statements = parser.parse()
-    //val parseTimeNs = System.nanoTime() - now
-    //println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
+    val parseTimeNs = System.nanoTime() - parseStart
 
-    if (hadError) return
+    if (hadError) {
+        println("error")
+        return
+    }
 
     if (shouldPrintAst) {
         AstPrinter().print(statements)
     }
+
+    val interpretStart = System.nanoTime()
     interpreter.interpret(statements)
+    val interpretTimeNs = System.nanoTime() - interpretStart
+
+    println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
+    println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
+    println("Took ${interpretTimeNs}ns | ${interpretTimeNs / 1e6}ms to interpret")
 }
 
 fun error(line: Int, message: String) {
