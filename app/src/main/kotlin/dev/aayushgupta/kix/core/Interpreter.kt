@@ -66,6 +66,15 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     override fun visitLiteralExpr(expr: Expr.Literal) = expr.value
 
+    override fun visitLogicalExpr(expr: Expr.Logical): Any {
+        val left = evaluate(expr.left)
+        return when {
+            expr.operator.type == TokenType.OR && isTruthy(left) -> left
+            expr.operator.type == TokenType.AND && !isTruthy(left) -> left
+            else -> evaluate(expr.right)
+        }
+    }
+
     override fun visitUnaryExpr(expr: Expr.Unary): Any {
         val right = evaluate(expr.right)
         return evaluateUnaryExpr(expr, right)

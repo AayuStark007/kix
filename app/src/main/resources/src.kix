@@ -54,3 +54,7 @@ if (a1 < 50)
     print "a1 is less than 50";
 else if (a1 == 50) print "a1 is 50";
 else print "a1 is greater than 50";
+
+// TODO: write a test suite
+print "hi" or 2;
+print nil or "yes";

@@ -17,6 +17,7 @@ fun main(args: Array<String>) {
             "Binary    -> val left: Expr, val operator: Token, val right: Expr",
             "Grouping  -> val expression: Expr",
             "Literal   -> val value: Any",
+            "Logical   -> val left: Expr, val operator: Token, val right: Expr",
             "Unary     -> val operator: Token, val right: Expr",
             "Variable  -> val name: Token",
             "Null      -> none"

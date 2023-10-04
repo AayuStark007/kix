@@ -101,13 +101,39 @@ class Parser(private val tokens: List<Token>) {
     }
 
     private fun ternary(): Expr {
-        val expr = equality()
+        val expr = or()
 
         if (match(QUESTION_MARK)) {
             val trueBranch = expression()
             consume(COLON, "Invalid conditional, expected ':'")
             val falseBranch = expression()
             return Expr.Ternary(expr, trueBranch, falseBranch)
+        }
+
+        return expr
+    }
+
+    //TODO: move to parse left associative
+    private fun or(): Expr {
+        var expr = and();
+
+        while (match(OR)) {
+            val operator = previous()
+            val right = and();
+            expr = Expr.Logical(expr, operator, right)
+        }
+
+        return expr
+    }
+
+    //TODO: move to parse left associative
+    private fun and(): Expr {
+        var expr = equality()
+
+        while (match(AND)) {
+            val operator = previous();
+            val right = equality();
+            expr = Expr.Logical(expr, operator, right)
         }
 
         return expr

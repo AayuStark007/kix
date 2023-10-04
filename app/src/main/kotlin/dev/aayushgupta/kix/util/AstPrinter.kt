@@ -41,6 +41,10 @@ class AstPrinter : Visitor<String>, Stmt.Visitor<String> {
         return "${expr.value}"
     }
 
+    override fun visitLogicalExpr(expr: Logical): String {
+        return parenthesize(expr.operator.type.name, expr.left, expr.right)
+    }
+
     override fun visitUnaryExpr(expr: Unary): String {
         return parenthesize(expr.operator.lexeme, expr.right)
     }
