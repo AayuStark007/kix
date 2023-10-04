@@ -59,6 +59,7 @@ else print "a1 is greater than 50";
 print "hi" or 2;
 print nil or "yes";
 
+// TODO: --n does not work
 var n = 5;
 while (n > 0) {
     n = n - 1;
@@ -66,3 +67,14 @@ while (n > 0) {
 }
 
 print "outside loop";
+
+
+print "printing first 8 fibo numbers";
+var fr = 0;
+var temp;
+
+for (var i = 1; fr < 20; i = temp + i) {
+    print fr;
+    temp = fr;
+    fr = i;
+}
