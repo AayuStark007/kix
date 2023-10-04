@@ -131,6 +131,10 @@ class AstPrinter : Visitor<String>, Stmt.Visitor<String> {
         return parenthesize("var ${stmt.name}", stmt.initializer)
     }
 
+    override fun visitWhileStmt(stmt: Stmt.While): String {
+        return parenthesize("while", stmt.condition)
+    }
+
     override fun visitNullStmt(stmt: Stmt.Null): String {
         return parenthesize("null")
     }

@@ -47,6 +47,12 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
         environment.define(stmt.name.lexeme, value)
     }
 
+    override fun visitWhileStmt(stmt: Stmt.While) {
+        while(isTruthy(evaluate(stmt.condition))) {
+            execute(stmt.body)
+        }
+    }
+
     override fun visitNullStmt(stmt: Stmt.Null) = Unit
     //endregion
 

@@ -58,3 +58,11 @@ else print "a1 is greater than 50";
 // TODO: write a test suite
 print "hi" or 2;
 print nil or "yes";
+
+var n = 5;
+while (n > 0) {
+    n = n - 1;
+    print "inside loop " + n;
+}
+
+print "outside loop";

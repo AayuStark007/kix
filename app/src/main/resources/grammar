@@ -20,6 +20,7 @@ varDecl         -> "var" IDENTIFIER ( "=" expression )? ;
 statement       -> exprStmt
                  | ifStmt
                  | printStmt
+                 | whileStmt
                  | blockStmt ;
 
 // Statements
@@ -29,6 +30,8 @@ ifStmt          -> "if" "(" expression ")" statement
                    ("else" statement )? ;
 
 printStmt       -> "print" expression ;
+
+whileStmt       -> "while" "(" expression ")" statement ;
 
 blockStmt       -> "{" declaration* "}" ;
 
@@ -42,6 +45,7 @@ ternary         -> logic_or ( "?" expression ":" expression )* ;
 
 logic_or        -> logic_and ( "or" logic_and )* ;
 logic_and       -> equality ( "and" equality )* ;
+
 
 // precedence rules
 equality        -> comparison ( ( "!=" | "==" ) comparison )* ;
