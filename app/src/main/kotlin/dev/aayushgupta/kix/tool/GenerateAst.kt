@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
             "Assign    -> val name: Token, val value: Expr",
             "Ternary   -> val condition: Expr, val expTrue: Expr, val expFalse: Expr",
             "Binary    -> val left: Expr, val operator: Token, val right: Expr",
+            "Call      -> val callee: Expr, val paren: Token, val args: List<Expr>",
             "Grouping  -> val expression: Expr",
             "Literal   -> val value: Any",
             "Logical   -> val left: Expr, val operator: Token, val right: Expr",

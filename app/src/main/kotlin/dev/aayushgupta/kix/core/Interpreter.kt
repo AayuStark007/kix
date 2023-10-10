@@ -68,6 +68,22 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     override fun visitBinaryExpr(expr: Expr.Binary) =
         evaluateBinaryExpr(expr.operator, evaluate(expr.left), evaluate(expr.right))
 
+    override fun visitCallExpr(expr: Expr.Call): Any {
+        val callee = evaluate(expr.callee)
+        val args = expr.args.map(::evaluate)
+        if (callee !is KixCallable) {
+            throw RuntimeError(
+                expr.paren,
+                "Can only call functions and classes."
+            )
+        }
+        if (args.size != callee.arity()) {
+            throw RuntimeError(expr.paren,
+                "Expected ${callee.arity()} arguments but got ${args.size}.")
+        }
+        return callee.call(this, args)
+    }
+
     override fun visitGroupingExpr(expr: Expr.Grouping) = evaluate(expr.expression)
 
     override fun visitLiteralExpr(expr: Expr.Literal) = expr.value

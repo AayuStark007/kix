@@ -32,6 +32,10 @@ class AstPrinter : Visitor<String>, Stmt.Visitor<String> {
         return parenthesize(expr.operator.lexeme, expr.left, expr.right)
     }
 
+    override fun visitCallExpr(expr: Call): String {
+        return parenthesize("func")
+    }
+
     override fun visitGroupingExpr(expr: Grouping): String {
         return parenthesize("group", expr.expression)
     }

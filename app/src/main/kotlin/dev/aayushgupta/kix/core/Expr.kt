@@ -5,6 +5,7 @@ sealed class Expr {
 		fun visitAssignExpr(expr: Assign): R
 		fun visitTernaryExpr(expr: Ternary): R
 		fun visitBinaryExpr(expr: Binary): R
+		fun visitCallExpr(expr: Call): R
 		fun visitGroupingExpr(expr: Grouping): R
 		fun visitLiteralExpr(expr: Literal): R
 		fun visitLogicalExpr(expr: Logical): R
@@ -28,6 +29,12 @@ sealed class Expr {
 	class Binary(val left: Expr, val operator: Token, val right: Expr): Expr() {
 		override fun <R> accept(visitor: Visitor<R>): R {
 			return visitor.visitBinaryExpr(this)
+		}
+	}
+
+	class Call(val callee: Expr, val paren: Token, val args: List<Expr>): Expr() {
+		override fun <R> accept(visitor: Visitor<R>): R {
+			return visitor.visitCallExpr(this)
 		}
 	}
 

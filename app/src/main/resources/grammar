@@ -64,6 +64,10 @@ factor          -> unary ( ( "/" | "*" ) unary )* ;
 unary           -> ( "!" | "-" ) unary
                  | primary ;
 
+call            -> primary ( "(" arguments? ")" )* ;
+
+arguments       -> expression ( "," expression )* ;
+
 primary         -> "true" | "false" | "nil"
                  | NUMBER | STRING
                  | "(" expression ")"
