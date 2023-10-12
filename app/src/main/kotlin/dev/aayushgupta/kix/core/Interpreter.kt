@@ -5,9 +5,39 @@ import dev.aayushgupta.kix.util.NULL
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
+class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // TODO: make environment immutable by passing it as arg to visitors
-    private var environment = Environment()
+    private val globals = Environment()
+    private var environment = globals
+
+    init {
+        // clock: returns unix timestamp in millis
+        globals.define("clock", object : KixCallable {
+            override fun call(interpreter: Interpreter, args: List<Any>): Any {
+                return System.currentTimeMillis().toDouble()
+            }
+
+            override fun arity() = 0
+        })
+
+        // print: print whatever is passed
+        globals.define("print", object : KixCallable {
+            override fun call(interpreter: Interpreter, args: List<Any>): Any {
+                return print(args.joinToString(" "))
+            }
+
+            override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
+        })
+
+        // println: print whatever is passed followed by a newline
+        globals.define("println", object : KixCallable {
+            override fun call(interpreter: Interpreter, args: List<Any>): Any {
+                return println(args.joinToString(" "))
+            }
+
+            override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
+        })
+    }
 
     fun interpret(statements: List<Stmt>) {
         try {

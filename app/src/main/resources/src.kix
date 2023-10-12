@@ -81,4 +81,8 @@ for (var i = 1; fr < 20; i = temp + i) {
 
 // TODO: implement break and continue
 
-"totally not a func"();
+//"totally not a func"();
+
+print(clock()); // TODO: same line print not work as interpreter understands this as "print" followed by grouping expression
+println(clock() + " hellos");
+
