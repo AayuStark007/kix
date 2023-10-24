@@ -11,10 +11,15 @@ Parenthesis:       Pair of ( and ) wrapped around an expression
 // Program
 program         -> declaration* EOF ;
 
-declaration     -> varDecl
+declaration     -> funDecl
+                 | varDecl
                  | statement ;
 
 // Declarations
+funDecl         -> "fun" function ;
+function        -> IDENTIFIER "(" parameters? ")" block ;
+parameters      -> IDENTIFIER ( "," IDENTIFIER )* ;
+
 varDecl         -> "var" IDENTIFIER ( "=" expression )? ;
 
 statement       -> exprStmt

@@ -29,6 +29,7 @@ fun main(args: Array<String>) {
         outputDir, "Stmt", listOf(
             "Block      -> val statements: List<Stmt>",
             "Expression -> val expression: Expr",
+            "Function   -> val name: Token, val params: List<Token>, val body: List<Stmt>",
             "If         -> val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt",
             "Print      -> val expression: Expr",
             "Var        -> val name: Token, val initializer: Expr",

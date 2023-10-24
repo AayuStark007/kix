@@ -123,6 +123,10 @@ class AstPrinter : Visitor<String>, Stmt.Visitor<String> {
         return stmt.expression.accept(this)
     }
 
+    override fun visitFunctionStmt(stmt: Stmt.Function): String {
+        return parenthesize("fun")
+    }
+
     override fun visitIfStmt(stmt: Stmt.If): String {
         return parenthesize("if", stmt.condition)
     }

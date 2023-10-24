@@ -86,3 +86,17 @@ for (var i = 1; fr < 20; i = temp + i) {
 print(clock()); // TODO: same line print not work as interpreter understands this as "print" followed by grouping expression
 println(clock() + " hellos");
 
+fun sayHi(first, last) {
+    println("Hi, " + first + " " + last + "!");
+}
+
+sayHi("Dear", "Aayush");
+sayHi("Hola", "hero");
+
+fun printFrom(limit) {
+    print(limit);
+    if (limit > 0) printFrom(limit-1);
+}
+
+printFrom(10);
+

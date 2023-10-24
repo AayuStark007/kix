@@ -19,12 +19,30 @@ class Parser(private val tokens: List<Token>) {
 
     private fun declaration(): Stmt {
         try {
+            if (match(FUN)) return function("function")
             if (match(VAR)) return varDeclaration()
             return statement()
         } catch (error: ParseError) {
             synchronize()
             return Stmt.Null
         }
+    }
+
+    private fun function(kind: String): Stmt.Function {
+        val name = consume(IDENTIFIER, "Expect $kind name.")
+        consume(LEFT_PAREN, "Expect '(' after $kind name.")
+        val params = mutableListOf<Token>()
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (params.size >= 255) {
+                    error(peek(), "Can't have more than 255 parameters.")
+                }
+                params.add(consume(IDENTIFIER, "Expect parameter name."))
+            } while (match(COMMA))
+        }
+        consume(RIGHT_PAREN, "Expect ')' after parameters.")
+        consume(LEFT_BRACE, "Expect '{' before $kind body.")
+        return Stmt.Function(name, params, body = block())
     }
 
     private fun varDeclaration(): Stmt {

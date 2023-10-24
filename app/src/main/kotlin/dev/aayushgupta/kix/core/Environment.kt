@@ -2,7 +2,7 @@ package dev.aayushgupta.kix.core
 
 import dev.aayushgupta.kix.util.NULL
 
-internal class Environment(private val enclosing: Environment? = null) {
+class Environment(private val enclosing: Environment? = null) {
 
     private val values = hashMapOf<String, Any>()
 

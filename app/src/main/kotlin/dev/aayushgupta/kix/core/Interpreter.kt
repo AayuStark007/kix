@@ -8,6 +8,8 @@ import java.math.RoundingMode
 class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // TODO: make environment immutable by passing it as arg to visitors
     private val globals = Environment()
+    fun getGlobals() = globals
+
     private var environment = globals
 
     init {
@@ -18,6 +20,8 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
             }
 
             override fun arity() = 0
+
+            override fun toString() = "<native fn>"
         })
 
         // print: print whatever is passed
@@ -27,6 +31,8 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
             }
 
             override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
+
+            override fun toString() = "<native fn>"
         })
 
         // println: print whatever is passed followed by a newline
@@ -36,6 +42,8 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
             }
 
             override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
+
+            override fun toString() = "<native fn>"
         })
     }
 
@@ -56,6 +64,11 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     override fun visitExpressionStmt(stmt: Stmt.Expression) {
         evaluate(stmt.expression)
+    }
+
+    override fun visitFunctionStmt(stmt: Stmt.Function) {
+        val function = KixFunction(stmt)
+        environment.define(stmt.name.lexeme, function)
     }
 
     override fun visitIfStmt(stmt: Stmt.If) {
@@ -238,7 +251,7 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
         throw RuntimeError(operator, "Operand must be a number.")
     }
 
-    private fun executeBlock(statements: List<Stmt>, environment: Environment) {
+    fun executeBlock(statements: List<Stmt>, environment: Environment) {
         // save the current env beforehand
         val previous = this.environment
         try {
