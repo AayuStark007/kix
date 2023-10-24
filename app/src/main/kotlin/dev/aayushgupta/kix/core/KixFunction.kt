@@ -1,9 +1,11 @@
 package dev.aayushgupta.kix.core
 
-class KixFunction(private val declaration: Stmt.Function): KixCallable {
+class KixFunction(
+    private val declaration: Stmt.Function,
+    private val closure: Environment): KixCallable {
 
     override fun call(interpreter: Interpreter, args: List<Any>): Any {
-        val environment = Environment(interpreter.getGlobals())
+        val environment = Environment(closure)
         for (i in 0..<declaration.params.size) {
             environment.define(declaration.params[i].lexeme, args[i])
         }

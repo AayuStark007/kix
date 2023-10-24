@@ -8,7 +8,6 @@ import java.math.RoundingMode
 class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // TODO: make environment immutable by passing it as arg to visitors
     private val globals = Environment()
-    fun getGlobals() = globals
 
     private var environment = globals
 
@@ -67,7 +66,7 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     }
 
     override fun visitFunctionStmt(stmt: Stmt.Function) {
-        val function = KixFunction(stmt)
+        val function = KixFunction(stmt, environment)
         environment.define(stmt.name.lexeme, function)
     }
 
