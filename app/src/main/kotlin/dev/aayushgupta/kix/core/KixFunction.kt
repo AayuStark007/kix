@@ -8,7 +8,11 @@ class KixFunction(private val declaration: Stmt.Function): KixCallable {
             environment.define(declaration.params[i].lexeme, args[i])
         }
 
-        return interpreter.executeBlock(declaration.body, environment)
+        return try {
+            interpreter.executeBlock(declaration.body, environment)
+        } catch (returnValue: Return) {
+            returnValue.value
+        }
     }
 
     override fun arity(): Int {

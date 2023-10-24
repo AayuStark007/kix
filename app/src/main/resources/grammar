@@ -26,6 +26,7 @@ statement       -> exprStmt
                  | forStmt
                  | ifStmt
                  | printStmt
+                 | returnStmt
                  | whileStmt
                  | blockStmt ;
 
@@ -40,6 +41,8 @@ ifStmt          -> "if" "(" expression ")" statement
                    ("else" statement )? ;
 
 printStmt       -> "print" expression ;
+
+returnStmt      -> "return" expression? ";" ;
 
 whileStmt       -> "while" "(" expression ")" statement ;
 
