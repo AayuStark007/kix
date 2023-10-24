@@ -29,6 +29,7 @@ fun main(args: Array<String>) {
         outputDir, "Stmt", listOf(
             "Block      -> val statements: List<Stmt>",
             "Expression -> val expression: Expr",
+            // TODO: allow anon fun's by having Expr Function too
             "Function   -> val name: Token, val params: List<Token>, val body: List<Stmt>",
             "If         -> val condition: Expr, val thenBranch: Stmt, val elseBranch: Stmt",
             "Print      -> val expression: Expr",

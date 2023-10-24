@@ -72,9 +72,9 @@ fun run(source: String) {
     interpreter.interpret(statements)
     val interpretTimeNs = System.nanoTime() - interpretStart
 
-    println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
-    println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
-    println("Took ${interpretTimeNs}ns | ${interpretTimeNs / 1e6}ms to interpret")
+//    println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
+//    println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
+//    println("Took ${interpretTimeNs}ns | ${interpretTimeNs / 1e6}ms to interpret")
 }
 
 fun error(line: Int, message: String) {

@@ -55,7 +55,6 @@ if (a1 < 50)
 else if (a1 == 50) print "a1 is 50";
 else print "a1 is greater than 50";
 
-// TODO: write a test suite
 print "hi" or 2;
 print nil or "yes";
 
@@ -123,3 +122,21 @@ fun makeCounter() {
 var counter = makeCounter();
 counter(); // "1".
 counter(); // "2".
+
+fun scope(a) {
+    var a = "local";
+
+    print(a);
+}
+scope(2);
+
+var a = "global";
+{
+  fun showA() {
+    print a;
+  }
+
+  showA();
+  var a = "block";
+  showA();
+}

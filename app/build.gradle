@@ -27,6 +27,7 @@ dependencies {
 
     // Use the JUnit 5 integration.
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
@@ -48,7 +49,7 @@ application {
     mainClass = 'dev.aayushgupta.kix.KixKt'
 }
 
-tasks.named('test') {
+test {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }

@@ -1,0 +1,17 @@
+// ternary assignment
+var a = 100;
+var tern = a > 50 ? "great" : "less";
+print tern;
+
+tern = a + " " + tern;
+print tern;
+
+// nested ternary
+var nested = (a > 50 ? true : false) ? "got true" : "got false";
+print nested;
+
+print nested = a < 50 ? true : (a > 50 ? "a gt 50" : "a lt 50");
+
+// ternary assignment evaluation
+print a > 50 ? tern = "gt" : tern = "lt";
+print tern;

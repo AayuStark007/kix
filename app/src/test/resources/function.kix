@@ -1,0 +1,14 @@
+// TODO: implement break and continue
+
+//"totally not a func"();
+
+// native functions
+// print(clock()); // TODO: same line print not work as interpreter understands this as "print" followed by grouping expression
+// println(clock() + " hellos");
+
+fun sayHi(first, last) {
+    println("Hi, " + first + " " + last + "!");
+}
+
+sayHi("Dear", "Reader");
+sayHi("Mr", "Banana");
