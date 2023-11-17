@@ -9,9 +9,6 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.Clock
-import java.time.Duration
-import java.util.GregorianCalendar
 import kotlin.system.exitProcess
 
 private val interpreter = Interpreter()

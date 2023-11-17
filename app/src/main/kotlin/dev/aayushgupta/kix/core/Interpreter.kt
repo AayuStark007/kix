@@ -5,12 +5,12 @@ import dev.aayushgupta.kix.util.NULL
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-    // TODO: make environment immutable by passing it as arg to visitors
+// TODO: make environment immutable by passing it as arg to visitors
 class Interpreter(
-        private val globals: Environment = Environment(),
-        private var environment: Environment = globals,
-        private val locals: MutableMap<Expr, Int> = mutableMapOf()
-    ) : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
+    private val globals: Environment = Environment(),
+    private var environment: Environment = globals,
+    private val locals: MutableMap<Expr, Int> = mutableMapOf()
+) : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     init {
         // clock: returns unix timestamp in millis
@@ -96,7 +96,7 @@ class Interpreter(
     }
 
     override fun visitWhileStmt(stmt: Stmt.While) {
-        while(isTruthy(evaluate(stmt.condition))) {
+        while (isTruthy(evaluate(stmt.condition))) {
             execute(stmt.body)
         }
     }
@@ -133,8 +133,10 @@ class Interpreter(
             )
         }
         if (args.size != callee.arity()) {
-            throw RuntimeError(expr.paren,
-                "Expected ${callee.arity()} arguments but got ${args.size}.")
+            throw RuntimeError(
+                expr.paren,
+                "Expected ${callee.arity()} arguments but got ${args.size}."
+            )
         }
         return callee.call(this, args)
     }

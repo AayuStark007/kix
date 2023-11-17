@@ -42,12 +42,14 @@ class KixTest {
 
     @Test
     fun test_runArithmetic() {
-        assertOutput("""
+        assertOutput(
+            """
             0.75
             9
             6
             -4
-        """.trimIndent(), "arithmetic.kix")
+        """.trimIndent(), "arithmetic.kix"
+        )
     }
 
     @Test
@@ -62,7 +64,8 @@ class KixTest {
 
     @Test
     fun test_runScopes() {
-        assertOutput("""
+        assertOutput(
+            """
             inner a
             outer b
             global c
@@ -72,43 +75,51 @@ class KixTest {
             global a
             global b
             global c
-        """.trimIndent(), "scopes.kix")
+        """.trimIndent(), "scopes.kix"
+        )
     }
 
     @Test
     fun test_runTernary() {
-        assertOutput("""
+        assertOutput(
+            """
             great
             100 great
             got true
             a gt 50
             gt
             gt
-        """.trimIndent(), "ternary.kix")
+        """.trimIndent(), "ternary.kix"
+        )
     }
 
     @Test
     fun test_runConditional() {
-        assertOutput("""
+        assertOutput(
+            """
             lt
             a1 is greater than 50
             a1 is less than 50
             a1 is 50
-        """.trimIndent(), "conditional.kix")
+        """.trimIndent(), "conditional.kix"
+        )
     }
 
     @Test
     fun test_runBinaryOp() {
-        assertOutput("""
+        assertOutput(
+            """
             hi
             yes
             true
-        """.trimIndent(), "binaryop.kix")
+        """.trimIndent(), "binaryop.kix"
+        )
     }
 
     @Test
     fun test_runLoops() {
-        assertOutput("""
+        assertOutput(
+            """
             inside loop 4
             inside loop 3
             inside loop 2
@@ -123,20 +134,24 @@ class KixTest {
             5
             8
             13
-        """.trimIndent(), "loops.kix")
+        """.trimIndent(), "loops.kix"
+        )
     }
 
     @Test
     fun test_runFunction() {
-        assertOutput("""
+        assertOutput(
+            """
             Hi, Dear Reader!
             Hi, Mr Banana!
-        """.trimIndent(), "function.kix")
+        """.trimIndent(), "function.kix"
+        )
     }
 
     @Test
     fun test_runRecurse() {
-        assertOutput("""
+        assertOutput(
+            """
             10
             9
             8
@@ -168,7 +183,8 @@ class KixTest {
             1597.0
             2584.0
             4181.0
-        """.trimIndent(), "recurse.kix")
+        """.trimIndent(), "recurse.kix"
+        )
     }
 
     @Test
@@ -178,12 +194,14 @@ class KixTest {
 
     @Test
     fun test_runClosure() {
-        assertOutput("""
+        assertOutput(
+            """
             1
             2
             global
             global
-        """.trimIndent(), "closure.kix")
+        """.trimIndent(), "closure.kix"
+        )
     }
 
 //    @Test

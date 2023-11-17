@@ -1,6 +1,6 @@
 package dev.aayushgupta.kix.core
 
-import java.util.Stack
+import java.util.*
 
 /**
  * Resolver keeps track of the distance between the current scope and scope where the variable was defined (when current scope was created)
@@ -8,7 +8,8 @@ import java.util.Stack
  * the closure to refer to the redefined variable name. (eg: test in closure.kix demonstrates the issue)
  * Maintaining this distance measure helps the interpreter to resolve the variable using the initially defined scope.
  */
-class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMap<String, Boolean>> = Stack()): Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
+class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMap<String, Boolean>> = Stack()) :
+    Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
 
     override fun visitAssignExpr(expr: Expr.Assign) {
         resolve(expr.value)
