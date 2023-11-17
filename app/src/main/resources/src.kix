@@ -1,3 +1,5 @@
+// return "hello";
+
 var a = "global";
 {
     fun showA() {
@@ -8,3 +10,11 @@ var a = "global";
     var a = "block";
     showA(); // expect: "global"
 }
+
+fun dup() {
+    var a1 = "ffff";
+    //var a1 = "ggg";
+    print(a1);
+}
+
+dup();

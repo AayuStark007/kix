@@ -8,8 +8,15 @@ import java.util.*
  * the closure to refer to the redefined variable name. (eg: test in closure.kix demonstrates the issue)
  * Maintaining this distance measure helps the interpreter to resolve the variable using the initially defined scope.
  */
-class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMap<String, Boolean>> = Stack()) :
+class Resolver(private val interpreter: Interpreter) :
     Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
+
+    private val scopes: Stack<MutableMap<String, Boolean>> = Stack()
+    private var currentFunction: FunctionType = FunctionType.NONE
+
+    private enum class FunctionType {
+        NONE, FUNCTION
+    }
 
     override fun visitAssignExpr(expr: Expr.Assign) {
         resolve(expr.value)
@@ -72,7 +79,7 @@ class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMa
         declare(stmt.name)
         define(stmt.name)
 
-        resolveFunction(stmt)
+        resolveFunction(stmt, FunctionType.FUNCTION)
     }
 
     override fun visitIfStmt(stmt: Stmt.If) {
@@ -86,6 +93,9 @@ class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMa
     }
 
     override fun visitReturnStmt(stmt: Stmt.Return) {
+        if (currentFunction == FunctionType.NONE) {
+            dev.aayushgupta.kix.error(stmt.keyword, "Can't return from outside function.")
+        }
         if (stmt.value != Expr.Null) {
             resolve(stmt.value)
         }
@@ -130,7 +140,11 @@ class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMa
 
     private fun declare(name: Token) {
         if (scopes.empty()) return
-        scopes.peek()[name.lexeme] = false
+        val scope = scopes.peek()
+        if (scope.containsKey(name.lexeme)) {
+            dev.aayushgupta.kix.error(name, "Variable with this name already declared in this scope.")
+        }
+        scope[name.lexeme] = false
     }
 
     private fun define(name: Token) {
@@ -147,7 +161,10 @@ class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMa
         }
     }
 
-    private fun resolveFunction(function: Stmt.Function) {
+    private fun resolveFunction(function: Stmt.Function, type: FunctionType) {
+        val enclosingFunction = currentFunction
+        currentFunction = type
+
         beginScope()
         function.params.forEach {
             declare(it)
@@ -155,6 +172,8 @@ class Resolver(val interpreter: Interpreter, private val scopes: Stack<MutableMa
         }
         resolve(function.body)
         endScope()
+
+        currentFunction = enclosingFunction
     }
 
 

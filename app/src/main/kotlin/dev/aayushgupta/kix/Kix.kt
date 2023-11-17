@@ -56,10 +56,7 @@ fun run(source: String) {
     val statements = parser.parse()
     val parseTimeNs = System.nanoTime() - parseStart
 
-    if (hadError) {
-        println("error")
-        return
-    }
+    if (hadError) return
 
     if (shouldPrintAst) {
         AstPrinter().print(statements)
@@ -69,6 +66,9 @@ fun run(source: String) {
     val resolver = Resolver(interpreter)
     resolver.resolve(statements)
     val resolveTimeNs = System.nanoTime() - resolveStart
+
+    // Halt! There are resolution errors
+    if (hadError) return
 
     val interpretStart = System.nanoTime()
     interpreter.interpret(statements)
