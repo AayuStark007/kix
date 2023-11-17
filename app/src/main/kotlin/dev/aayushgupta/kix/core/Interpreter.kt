@@ -5,11 +5,12 @@ import dev.aayushgupta.kix.util.NULL
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // TODO: make environment immutable by passing it as arg to visitors
-    private val globals = Environment()
-
-    private var environment = globals
+class Interpreter(
+        private val globals: Environment = Environment(),
+        private var environment: Environment = globals,
+        private val locals: MutableMap<Expr, Int> = mutableMapOf()
+    ) : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     init {
         // clock: returns unix timestamp in millis
@@ -105,7 +106,14 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     // region expressions
     override fun visitAssignExpr(expr: Expr.Assign) =
-        evaluate(expr.value).also { environment.assign(expr.name, it) }
+        evaluate(expr.value).also { value ->
+            val distance = locals[expr]
+            if (distance != null) {
+                environment.assignAt(distance, expr.name, value)
+            } else {
+                globals.assign(expr.name, value)
+            }
+        }
 
     override fun visitTernaryExpr(expr: Expr.Ternary) =
         if (isTruthy(evaluate(expr.condition))) {
@@ -149,7 +157,7 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
         return evaluateUnaryExpr(expr, right)
     }
 
-    override fun visitVariableExpr(expr: Expr.Variable) = environment.get(expr.name)
+    override fun visitVariableExpr(expr: Expr.Variable) = lookUpVariable(expr.name, expr)
 
     override fun visitNullExpr(expr: Expr.Null) = NULL
 
@@ -158,6 +166,22 @@ class Interpreter() : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // region helpers
     private fun execute(stmt: Stmt) {
         stmt.accept(this)
+    }
+
+    fun resolve(expr: Expr, depth: Int) {
+        // either we can store the depth info in the syntax tree node itself,
+        // but it will require changes to the generator and require traversal to resolve
+        // or, we store in a lookup table which will be much faster
+        locals[expr] = depth
+    }
+
+    private fun lookUpVariable(name: Token, expr: Expr): Any {
+        val distance = locals[expr]
+        return if (distance != null) {
+            environment.getAt(distance, name.lexeme)
+        } else {
+            globals.get(name)
+        }
     }
 
     private fun evaluate(expr: Expr): Any {

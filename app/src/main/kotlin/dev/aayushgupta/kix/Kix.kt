@@ -68,12 +68,18 @@ fun run(source: String) {
         AstPrinter().print(statements)
     }
 
+    val resolveStart = System.nanoTime()
+    val resolver = Resolver(interpreter)
+    resolver.resolve(statements)
+    val resolveTimeNs = System.nanoTime() - resolveStart
+
     val interpretStart = System.nanoTime()
     interpreter.interpret(statements)
     val interpretTimeNs = System.nanoTime() - interpretStart
 
 //    println("Took ${scanDurationNs}ns | ${scanDurationNs / 1e6}ms to scan")
 //    println("Took ${parseTimeNs}ns | ${parseTimeNs / 1e6}ms to parse")
+//    println("Took ${resolveTimeNs}ns | ${resolveTimeNs / 1e6}ms to resolve")
 //    println("Took ${interpretTimeNs}ns | ${interpretTimeNs / 1e6}ms to interpret")
 }
 

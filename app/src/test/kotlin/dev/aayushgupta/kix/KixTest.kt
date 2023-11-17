@@ -182,7 +182,7 @@ class KixTest {
             1
             2
             global
-            block
+            global
         """.trimIndent(), "closure.kix")
     }
 
