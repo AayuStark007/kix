@@ -126,7 +126,13 @@ class Resolver(private val interpreter: Interpreter) :
     override fun visitNullStmt(stmt: Stmt.Null) {
     }
 
-    fun resolve(statements: List<Stmt>) {
+    fun run(statements: List<Stmt>) {
+        beginScope()
+        resolve(statements)
+        endScope()
+    }
+
+    private fun resolve(statements: List<Stmt>) {
         statements.forEach(::resolve)
     }
 

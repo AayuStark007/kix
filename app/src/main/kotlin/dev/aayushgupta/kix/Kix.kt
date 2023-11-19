@@ -64,7 +64,7 @@ fun run(source: String) {
 
     val resolveStart = System.nanoTime()
     val resolver = Resolver(interpreter)
-    resolver.resolve(statements)
+    resolver.run(statements)
     val resolveTimeNs = System.nanoTime() - resolveStart
 
     // Halt! There are resolution errors
