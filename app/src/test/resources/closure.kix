@@ -21,4 +21,5 @@ var a = "global";
   showA();
   var a = "block";
   showA();
+  print(a);
 }

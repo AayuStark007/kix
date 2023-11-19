@@ -1,20 +1,24 @@
-// return "hello";
+var glob = "hello";
 
-var a = "global";
-{
-    fun showA() {
-        print(a); // should close on the "global" 'a'
+fun fn1(args) {
+    var a = "hello";
+    //var b = "world";
+    print(args + " " + a);
+    return a;
+}
+
+
+fun main() {
+    var c = fn1("argss");
+
+    fun fn2() {
+        var d;
+        print("fn2");
     }
 
-    showA(); // expect: "global"
-    var a = "block";
-    showA(); // expect: "global"
+    print("result of calling fn1: " + c);
+    //fn2(); // Invalid operands: fn2 and dev.aayushgupta.kix.util.NULL@23ceabc1 for '+'
 }
 
-fun dup() {
-    var a1 = "ffff";
-    //var a1 = "ggg";
-    print(a1);
-}
+main();
 
-dup();
