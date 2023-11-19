@@ -185,6 +185,6 @@ internal class Scanner(private val source: String) {
         advance()
 
         // TODO: add debug flag to print contents of token added (probably to the addToken() fun)
-        println("Multiline Comment: \n${source.substring(start, current)}")
+        //println("Multiline Comment: \n${source.substring(start, current)}")
     }
 }

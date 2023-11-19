@@ -4,3 +4,5 @@ fun scope(a) {
     print(a);
 }
 scope(2);
+
+// TODO: shadowing should be allowed? or handle this in the test as a error emitting case

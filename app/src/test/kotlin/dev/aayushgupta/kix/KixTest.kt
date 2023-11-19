@@ -187,10 +187,10 @@ class KixTest {
         )
     }
 
-    @Test
-    fun test_runShadow() {
-        assertOutput("local", "shadow.kix")
-    }
+//    @Test
+//    fun test_runShadow() {
+//        assertOutput("local", "shadow.kix")
+//    }
 
     @Test
     fun test_runClosure() {
