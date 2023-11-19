@@ -27,7 +27,7 @@ class Resolver(private val interpreter: Interpreter) :
 
     override fun visitAssignExpr(expr: Expr.Assign) {
         resolve(expr.value)
-        resolveLocal(expr, expr.name)
+        resolveLocal(expr, expr.name, isRead = false)
     }
 
     override fun visitTernaryExpr(expr: Expr.Ternary) {
@@ -68,7 +68,7 @@ class Resolver(private val interpreter: Interpreter) :
         ) {
             dev.aayushgupta.kix.error(expr.name, "Can't read local variable in its own initializer")
         }
-        resolveLocal(expr, expr.name)
+        resolveLocal(expr, expr.name, isRead = true)
     }
 
     override fun visitNullExpr(expr: Expr.Null) {
@@ -172,11 +172,11 @@ class Resolver(private val interpreter: Interpreter) :
         scopes.peek()[name.lexeme] = Info(defined = true, used = false, token = name, functionType = functionType)
     }
 
-    private fun resolveLocal(expr: Expr, name: Token) {
+    private fun resolveLocal(expr: Expr, name: Token, isRead: Boolean) {
         for (i in scopes.size - 1 downTo 0) {
             if (scopes[i].containsKey(name.lexeme)) {
                 interpreter.resolve(expr, scopes.size - 1 - i)
-                scopes[i][name.lexeme]?.used = true
+                if (isRead) scopes[i][name.lexeme]?.used = true
                 return
             }
         }
