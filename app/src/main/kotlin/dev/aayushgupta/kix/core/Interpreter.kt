@@ -10,7 +10,9 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     private var environment: Environment? = null
     private val globals: MutableMap<String, Any> = mutableMapOf()
-    private val locals: MutableMap<Expr, Int> = mutableMapOf()
+    private val locals: MutableMap<Expr, Local> = mutableMapOf()
+
+    private data class Local(val distance: Int, val slot: Int)
 
     init {
         // clock: returns unix timestamp in millis
@@ -107,9 +109,9 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
     // region expressions
     override fun visitAssignExpr(expr: Expr.Assign) =
         evaluate(expr.value).also { value ->
-            val distance = locals[expr]
-            if (distance != null) {
-                environment?.assignAt(distance, expr.name, value)
+            val local = locals[expr]
+            if (local != null) {
+                environment?.assignAt(local.distance, local.slot, value)
             } else {
                 if (globals.containsKey(expr.name.lexeme)) {
                     globals[expr.name.lexeme] = value
@@ -172,23 +174,23 @@ class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
         stmt.accept(this)
     }
 
-    fun resolve(expr: Expr, depth: Int) {
+    fun resolve(expr: Expr, depth: Int, slot: Int) {
         // either we can store the depth info in the syntax tree node itself,
         // but it will require changes to the generator and require traversal to resolve
         // or, we store in a lookup table which will be much faster
-        locals[expr] = depth
+        locals[expr] = Local(depth, slot)
     }
 
     private fun define(name: Token, value: Any) {
-        environment?.define(name.lexeme, value) ?: run {
+        environment?.define(value) ?: run {
             globals[name.lexeme] = value
         }
     }
 
     private fun lookUpVariable(name: Token, expr: Expr): Any {
-        val distance = locals[expr]
-        return if (distance != null) {
-            environment?.getAt(distance, name.lexeme) ?: throw RuntimeError(
+        val local = locals[expr]
+        return if (local != null) {
+            environment?.getAt(local.distance, local.slot) ?: throw RuntimeError(
                 name,
                 "Unable to find variable '${name.lexeme}'"
             )

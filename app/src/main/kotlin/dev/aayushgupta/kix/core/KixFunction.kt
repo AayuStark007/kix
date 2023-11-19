@@ -8,7 +8,7 @@ class KixFunction(
     override fun call(interpreter: Interpreter, args: List<Any>): Any {
         val environment = Environment(closure)
         for (i in 0..<declaration.params.size) {
-            environment.define(declaration.params[i].lexeme, args[i])
+            environment.define(args[i])
         }
 
         return try {

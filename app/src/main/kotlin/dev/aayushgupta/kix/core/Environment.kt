@@ -1,10 +1,10 @@
 package dev.aayushgupta.kix.core
 
 class Environment(private val enclosing: Environment? = null) {
-    private val values = hashMapOf<String, Any>()
+    private val values = mutableListOf<Any>()
 
-    fun define(name: String, value: Any) {
-        values[name] = value
+    fun define(value: Any) {
+        values.add(value)
     }
 
     private fun ancestor(distance: Int): Environment {
@@ -15,11 +15,11 @@ class Environment(private val enclosing: Environment? = null) {
         return environment
     }
 
-    fun getAt(distance: Int, name: String): Any {
-        return ancestor(distance).values[name]!!
+    fun getAt(distance: Int, slot: Int): Any {
+        return ancestor(distance).values[slot]
     }
 
-    fun assignAt(distance: Int, name: Token, value: Any) {
-        ancestor(distance).values[name.lexeme] = value
+    fun assignAt(distance: Int, slot: Int, value: Any) {
+        ancestor(distance).values[slot] = value
     }
 }

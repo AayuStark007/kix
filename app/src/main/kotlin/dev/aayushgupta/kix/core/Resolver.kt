@@ -11,18 +11,22 @@ import java.util.*
 class Resolver(private val interpreter: Interpreter) :
     Expr.Visitor<Unit>, Stmt.Visitor<Unit> {
 
-    private val scopes: Stack<MutableMap<String, Info>> = Stack()
+    private val scopes: Stack<MutableMap<String, VariableInfo>> = Stack()
     private var currentFunction: FunctionType = FunctionType.NONE
 
-    private class Info(
-        var defined: Boolean = false,
-        var used: Boolean = false,
+    private data class VariableInfo(
+        var state: VariableState,
+        val slot: Int,
         var token: Token,
         var functionType: FunctionType = FunctionType.NONE
     )
 
     private enum class FunctionType {
         NONE, FUNCTION
+    }
+
+    private enum class VariableState {
+        DECLARED, DEFINED, USED
     }
 
     override fun visitAssignExpr(expr: Expr.Assign) {
@@ -63,8 +67,9 @@ class Resolver(private val interpreter: Interpreter) :
     }
 
     override fun visitVariableExpr(expr: Expr.Variable) {
-        if ((scopes.isNotEmpty()
-                    && scopes.peek().containsKey(expr.name.lexeme)) && !scopes.peek()[expr.name.lexeme]?.defined!!
+        if (scopes.isNotEmpty()
+            && scopes.peek().containsKey(expr.name.lexeme)
+            && scopes.peek()[expr.name.lexeme]?.state == VariableState.DECLARED
         ) {
             dev.aayushgupta.kix.error(expr.name, "Can't read local variable in its own initializer")
         }
@@ -86,7 +91,7 @@ class Resolver(private val interpreter: Interpreter) :
 
     override fun visitFunctionStmt(stmt: Stmt.Function) {
         declare(stmt.name, FunctionType.FUNCTION)
-        define(stmt.name, FunctionType.FUNCTION)
+        define(stmt.name)
 
         resolveFunction(stmt, FunctionType.FUNCTION)
     }
@@ -160,7 +165,7 @@ class Resolver(private val interpreter: Interpreter) :
     private fun checkForUnusedVariables() {
         val popped = scopes.peek()
         popped.forEach { entry ->
-            if (entry.value.functionType == FunctionType.NONE && !entry.value.used) {
+            if (entry.value.functionType == FunctionType.NONE && entry.value.state != VariableState.USED) {
                 dev.aayushgupta.kix.error(entry.value.token, "Variable defined but not used.")
             }
         }
@@ -172,19 +177,20 @@ class Resolver(private val interpreter: Interpreter) :
         if (scope.containsKey(name.lexeme)) {
             dev.aayushgupta.kix.error(name, "Variable with this name already declared in this scope.")
         }
-        scope[name.lexeme] = Info(defined = false, used = false, token = name, functionType = functionType)
+        scope[name.lexeme] =
+            VariableInfo(state = VariableState.DECLARED, slot = scope.size, token = name, functionType = functionType)
     }
 
-    private fun define(name: Token, functionType: FunctionType = FunctionType.NONE) {
+    private fun define(name: Token) {
         if (scopes.empty()) return
-        scopes.peek()[name.lexeme] = Info(defined = true, used = false, token = name, functionType = functionType)
+        scopes.peek()[name.lexeme]?.state = VariableState.DEFINED
     }
 
     private fun resolveLocal(expr: Expr, name: Token, isRead: Boolean) {
         for (i in scopes.size - 1 downTo 0) {
             if (scopes[i].containsKey(name.lexeme)) {
-                interpreter.resolve(expr, scopes.size - 1 - i)
-                if (isRead) scopes[i][name.lexeme]?.used = true
+                interpreter.resolve(expr, scopes.size - 1 - i, scopes[i][name.lexeme]!!.slot)
+                if (isRead) scopes[i][name.lexeme]?.state = VariableState.USED
                 return
             }
         }

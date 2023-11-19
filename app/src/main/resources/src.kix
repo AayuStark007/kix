@@ -14,7 +14,7 @@ fun main() {
 
     fun fn2() {
         var d;
-        print("fn2" + d);
+        print("fn2");
     }
 
     print("result of calling fn1: " + c);
