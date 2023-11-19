@@ -127,9 +127,11 @@ class Resolver(private val interpreter: Interpreter) :
     }
 
     fun run(statements: List<Stmt>) {
-        beginScope()
+        // TODO: need different approach for usage check of globals,
+        //  wrapping below in begin/end scope causes the globals decls to get added to the locals map leading to subtle errors
+//        beginScope()
         resolve(statements)
-        endScope()
+//        endScope()
     }
 
     private fun resolve(statements: List<Stmt>) {

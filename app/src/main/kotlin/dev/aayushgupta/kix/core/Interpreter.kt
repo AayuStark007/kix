@@ -6,15 +6,15 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 // TODO: make environment immutable by passing it as arg to visitors
-class Interpreter(
-    private val globals: Environment = Environment(),
-    private var environment: Environment = globals,
+class Interpreter : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
+
+    private var environment: Environment? = null
+    private val globals: MutableMap<String, Any> = mutableMapOf()
     private val locals: MutableMap<Expr, Int> = mutableMapOf()
-) : Stmt.Visitor<Unit>, Expr.Visitor<Any> {
 
     init {
         // clock: returns unix timestamp in millis
-        globals.define("clock", object : KixCallable {
+        globals["clock"] = object : KixCallable {
             override fun call(interpreter: Interpreter, args: List<Any>): Any {
                 return System.currentTimeMillis().toDouble()
             }
@@ -22,10 +22,10 @@ class Interpreter(
             override fun arity() = 0
 
             override fun toString() = "<native fn>"
-        })
+        }
 
         // print: print whatever is passed
-        globals.define("print", object : KixCallable {
+        globals["print"] = object : KixCallable {
             override fun call(interpreter: Interpreter, args: List<Any>): Any {
                 return print(args.joinToString(" "))
             }
@@ -33,10 +33,10 @@ class Interpreter(
             override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
 
             override fun toString() = "<native fn>"
-        })
+        }
 
         // println: print whatever is passed followed by a newline
-        globals.define("println", object : KixCallable {
+        globals["println"] = object : KixCallable {
             override fun call(interpreter: Interpreter, args: List<Any>): Any {
                 return println(args.joinToString(" "))
             }
@@ -44,7 +44,7 @@ class Interpreter(
             override fun arity() = 1 // TODO: varargs for now assume exact one arg is required
 
             override fun toString() = "<native fn>"
-        })
+        }
     }
 
     fun interpret(statements: List<Stmt>) {
@@ -68,7 +68,7 @@ class Interpreter(
 
     override fun visitFunctionStmt(stmt: Stmt.Function) {
         val function = KixFunction(stmt, environment)
-        environment.define(stmt.name.lexeme, function)
+        define(stmt.name, function)
     }
 
     override fun visitIfStmt(stmt: Stmt.If) {
@@ -92,7 +92,7 @@ class Interpreter(
         if (stmt.initializer != Expr.Null) {
             value = evaluate(stmt.initializer)
         }
-        environment.define(stmt.name.lexeme, value)
+        define(stmt.name, value)
     }
 
     override fun visitWhileStmt(stmt: Stmt.While) {
@@ -109,9 +109,11 @@ class Interpreter(
         evaluate(expr.value).also { value ->
             val distance = locals[expr]
             if (distance != null) {
-                environment.assignAt(distance, expr.name, value)
+                environment?.assignAt(distance, expr.name, value)
             } else {
-                globals.assign(expr.name, value)
+                if (globals.containsKey(expr.name.lexeme)) {
+                    globals[expr.name.lexeme] = value
+                } else throw RuntimeError(expr.name, "Undefined variable '${expr.name.lexeme}'.")
             }
         }
 
@@ -177,12 +179,21 @@ class Interpreter(
         locals[expr] = depth
     }
 
+    private fun define(name: Token, value: Any) {
+        environment?.define(name.lexeme, value) ?: run {
+            globals[name.lexeme] = value
+        }
+    }
+
     private fun lookUpVariable(name: Token, expr: Expr): Any {
         val distance = locals[expr]
         return if (distance != null) {
-            environment.getAt(distance, name.lexeme)
+            environment?.getAt(distance, name.lexeme) ?: throw RuntimeError(
+                name,
+                "Unable to find variable '${name.lexeme}'"
+            )
         } else {
-            globals.get(name)
+            globals.getOrElse(name.lexeme) { throw RuntimeError(name, "Undefined variable '${name.lexeme}'.") }
         }
     }
 

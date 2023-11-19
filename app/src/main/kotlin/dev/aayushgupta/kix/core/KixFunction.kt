@@ -2,7 +2,8 @@ package dev.aayushgupta.kix.core
 
 class KixFunction(
     private val declaration: Stmt.Function,
-    private val closure: Environment): KixCallable {
+    private val closure: Environment?
+) : KixCallable {
 
     override fun call(interpreter: Interpreter, args: List<Any>): Any {
         val environment = Environment(closure)
